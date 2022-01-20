@@ -2,7 +2,7 @@
 
 Run board game automa without the fiddly bits.
 
-## Copyrights
+## Disclaimer
 
 Snowpanion does not provide a digital implementation of any board game. It only provides a companion to use alongside a retail copy of a board game. All game names and artwork are copyright their respective owners.
 

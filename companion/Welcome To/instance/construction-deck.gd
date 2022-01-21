@@ -1,7 +1,10 @@
 extends Node
 
 var ConstructionCard = load('res://companion/Welcome To/instance/construction-card.gd')
+var SoloPlanCard = load('res://companion/Welcome To/instance/solo-plan-card.gd')
 var PlanCard = load('res://companion/Welcome To/instance/plan-card.gd')
+
+# The 0th element in the deck is the top. The sizeth element is the bottom.
 
 var card_numbers = {
 	fence = [1,2,3,5,5,6,6,7,8,8,9,10,10,11,11,13,14,15],
@@ -24,16 +27,49 @@ func setup():
 			var card = ConstructionCard.new()
 			card.init(kind, card_numbers[kind][number_index], number_index)
 			deck_cards.push_back(card)
+	var n1_solo_plan = SoloPlanCard.new() 
+	n1_solo_plan.init("n1",5)
+	# TODO - Replace this insert with the randomized lower half as described in the rules
+	deck_cards.push_back(n1_solo_plan)
+	var n2_solo_plan = SoloPlanCard.new() 
+	n2_solo_plan.init("n2",8)
+	deck_cards.push_back(n2_solo_plan)
+	var n3_solo_plan = SoloPlanCard.new() 
+	n3_solo_plan.init("n3",7)
+	deck_cards.push_back(n3_solo_plan)
+	_update_deck_count()
+
+func _update_deck_count():
 	_count_label.text = str(deck_cards.size()) + " Cards"
 
 func shuffle():
 	deck_cards.shuffle()
 
 func top_card():
-	return deck_cards[0]
+	if deck_cards.size() > 0:
+		return deck_cards[0]
+	else:
+		return null
 
-func add_card(card):
-	deck_cards.push_back(card)
+func put_on_top(card):
+	deck_cards.push_front(card)
+	_update_deck_count()
 
 func count_label():
 	return _count_label
+
+func draw_top():
+	if deck_cards.size() <= 0:
+		return null
+	var draw = deck_cards.pop_front()
+	_update_deck_count()
+	return draw
+
+
+func add_all(deck):
+	deck_cards += deck.deck_cards
+	_update_deck_count()
+
+func clear():
+	deck_cards = []
+	_update_deck_count()

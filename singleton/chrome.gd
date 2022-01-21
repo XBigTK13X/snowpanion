@@ -25,13 +25,13 @@ func normal(node):
 	node.set_modulate(normal_color)
 
 func highlight_on_hover_button(texture):
-	var button = TextureButton.new()
-	normal(button)
+	var button = TextureButton.new()	
 	button.connect("mouse_entered", self, "highlight", [button])
 	button.connect("mouse_exited", self, "normal", [button])
 	button.connect("pressed", self, "darken", [button])
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.texture_normal = texture
+	normal(button)
 	return button
 
 func invisible_button():

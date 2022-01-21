@@ -6,9 +6,14 @@ var container
 var ai_picker_container
 var expansion_picker_container
 var companion_container
+var offering_container
 
 var selected_ai_name
 var selected_expansion_name
+
+var construction_deck
+var ai_deck
+var discard_deck
 
 var turn_states = []
 
@@ -140,13 +145,13 @@ func show_companion():
 	container.add_child(companion_container)
 	
 	var solo_ai = solo_ais[selected_ai_name]	
-	solo_ai.texture.set_position(Vector2(750,10))
+	solo_ai.texture.set_position(Vector2(1050,10))
 	companion_container.add_child(solo_ai.texture)
 	
 	var expansion = expansions[selected_expansion_name]
 	var expansion_label = Label.new()
 	expansion_label.text = "Expansion: " + expansion.display
-	expansion_label.set_position(Vector2(800,10))
+	expansion_label.set_position(Vector2(1100,10))
 	companion_container.add_child(expansion_label)
 	
 	show_city_plans()
@@ -156,16 +161,86 @@ func show_city_plans():
 	pass
 	
 func show_construction_cards():
-	var construction_deck = ConstructionDeck.new()
+	construction_deck = ConstructionDeck.new()
+	ai_deck = ConstructionDeck.new()
+	discard_deck = ConstructionDeck.new()
 	construction_deck.setup()
 	construction_deck.shuffle()
-	var top_card = construction_deck.top_card()
-	top_card.back_texture.set_position(Vector2(100,60))
-	top_card.show_back()
-	companion_container.add_child(top_card)
+	
+	var pick_label = Label.new()
+	pick_label.text = "Select a card to give to the AI"
+	pick_label.set_position(Vector2(350,10))
+	companion_container.add_child(pick_label)
+	
 	var count_label = construction_deck.count_label()
 	count_label.set_position(Vector2(100,10))
 	companion_container.add_child(count_label)
+		
+	draw_offering()
 
+func draw_offering():
+	if offering_container != null:
+		companion_container.remove_child(offering_container)
+		offering_container.queue_free()
+	offering_container = Node2D.new()
+	
+	var choices_container = GridContainer.new()
+	choices_container.set_position(Vector2(350,60))
+	choices_container.set_columns(3)
+	var first_card = construction_deck.draw_top()
+	if first_card == null:
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()
+		first_card = construction_deck.draw_top()
+	var second_card = construction_deck.draw_top()
+	if second_card == null:
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()
+		second_card = construction_deck.draw_top()
+	var third_card = construction_deck.draw_top()
+	if third_card == null:
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()
+		third_card = construction_deck.draw_top()
+	# TODO If any of the revealed cards are the solo plan, then add to a separate AI deck and draw again
+	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
+	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
+	choices_container.add_child(first_front_button)
+	var second_front_button = SC.Chrome.highlight_on_hover_button(second_card.front_texture.texture)
+	second_front_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
+	choices_container.add_child(second_front_button)
+	var third_front_button = SC.Chrome.highlight_on_hover_button(third_card.front_texture.texture)
+	third_front_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
+	choices_container.add_child(third_front_button)
+	var first_back_button = SC.Chrome.highlight_on_hover_button(first_card.back_texture.texture)
+	first_back_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
+	choices_container.add_child(first_back_button)
+	var second_back_button = SC.Chrome.highlight_on_hover_button(second_card.back_texture.texture)
+	second_back_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
+	choices_container.add_child(second_back_button)
+	var third_back_button = SC.Chrome.highlight_on_hover_button(third_card.back_texture.texture)
+	third_back_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
+	choices_container.add_child(third_back_button)
+	offering_container.add_child(choices_container)
+	
+	var top_card = construction_deck.top_card()
+	if top_card == null:
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()
+		top_card = construction_deck.top_card()
+	top_card.back_texture.set_position(Vector2(100,60))
+	offering_container.add_child(top_card.back_texture)
+	
+	companion_container.add_child(offering_container)
+
+func _on_choose_offer(pick, discards):
+	ai_deck.put_on_top(pick)
+	discard_deck.put_on_top(discards.pop_back())
+	discard_deck.put_on_top(discards.pop_back())
+	draw_offering()
 	
 	

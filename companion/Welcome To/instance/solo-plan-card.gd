@@ -24,3 +24,6 @@ func init(name, texture_index):
 
     back_texture = TextureRect.new()
     back_texture.texture = atlas_texture
+
+func is_plan():
+    return true

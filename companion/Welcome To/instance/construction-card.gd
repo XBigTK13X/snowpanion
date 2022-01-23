@@ -26,3 +26,6 @@ func init(kind, number, texture_index):
 
     back_texture = TextureRect.new()
     back_texture.texture = SC.Assets.load("Welcome To", "back-" + kind + ".jpg")
+
+func is_plan():
+    return false

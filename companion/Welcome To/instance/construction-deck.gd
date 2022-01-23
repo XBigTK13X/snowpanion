@@ -73,3 +73,9 @@ func add_all(deck):
 func clear():
 	deck_cards = []
 	_update_deck_count()
+
+func size():
+	return deck_cards.size()
+
+func get_all_cards():
+	return deck_cards

@@ -1,12 +1,14 @@
 extends Node
 
 var ConstructionDeck = load('res://companion/Welcome To/instance/construction-deck.gd')
+var AIScore = load('res://companion/Welcome To/instance/ai-score.gd')
 
 var container
 var ai_picker_container
 var expansion_picker_container
 var companion_container
 var offering_container
+var scoring_container
 
 var selected_ai_name
 var selected_expansion_name
@@ -14,30 +16,9 @@ var selected_expansion_name
 var construction_deck
 var ai_deck
 var discard_deck
+var ai_completed_plans = []
 
 var turn_states = []
-
-var fence_numbers = [1,2,3,5,5,6,6,7,8,8,9,10,10,11,11,13,14,15]
-var temp_agency_numbers = [3,4,6,7,8,9,10,12,13]
-var pool_numbers = [3,4,6,7,8,9,10,12,13]
-var real_estate_agent_numbers = [1,2,4,5,5,6,7,7,8,8,9,9,10,11,11,12,14,15]
-var bis_numbers = [3,4,6,7,8,9,10,12,13]
-var park_numbers = [1,2,4,5,5,6,7,7,8,8,9,9,10,11,11,12,14,15]
-
-var solo_plans = {
-	solo = {
-		asset = "front", atlas_index = 6
-	},
-	n1 = {
-		asset = "front", atlas_index = 5
-	},
-	n2 = {
-		asset = "front", atlas_index = 8
-	},
-	n3 = {
-		asset = "front", atlas_index = 7
-	}
-}
 
 # Points are top->bottom, left column->right column
 var solo_ais = {
@@ -74,13 +55,13 @@ var solo_ais = {
 }
 
 var expansions = {
-	none = {display="None", bonus_points=0},
-	halloween = {display="Halloween", bonus_points=0},	
-	doomsday = {display="Nuclear Doomsday", bonus_points=0},		
-	spring = {display="Spring / Easter", bonus_points=0},
-	summer = {display="Summer Ice Cream", bonus_points=0},
-	winter = {display="Winter Wonderland", bonus_points=0},
-	outbreak = {display="Zombie Outbreak", bonus_points=0}
+	none = {display="None", bonus_points=0, supported=true},
+	halloween = {display="Halloween", bonus_points=15, supported=true},	
+	doomsday = {display="Nuclear Doomsday", bonus_points=0, supported=false},		
+	spring = {display="Spring / Easter", bonus_points=20, supported=true},
+	summer = {display="Summer Ice Cream", bonus_points=25, supported=true},
+	winter = {display="Winter Wonderland", bonus_points=25, supported=true},
+	outbreak = {display="Zombie Outbreak", bonus_points=0, supported=false}
 }
 
 func _ready():
@@ -127,6 +108,8 @@ func show_expansion_picker():
 	
 	for expansion_name in expansions:
 		var expansion = expansions[expansion_name]
+		if ! expansion.supported:
+			continue
 		var expansion_button = Button.new()
 		expansion_button.text = expansion.display
 		expansion_button.rect_min_size = Vector2(300,100)
@@ -175,37 +158,46 @@ func show_construction_cards():
 	var count_label = construction_deck.count_label()
 	count_label.set_position(Vector2(100,10))
 	companion_container.add_child(count_label)
-		
+	
+	var ai_count_label = ai_deck.count_label()
+	ai_count_label.set_position(Vector2(1150, 400))
+	companion_container.add_child(ai_count_label)
+	
 	draw_offering()
+
+func draw_construction_card():
+	var card = construction_deck.draw_top()
+	if card == null:
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()
+		card = construction_deck.draw_top()
+	if card.is_plan():		
+		ai_completed_plans.push_back(card)
+		return draw_construction_card()
+	return card
 
 func draw_offering():
 	if offering_container != null:
-		companion_container.remove_child(offering_container)
-		offering_container.queue_free()
+		SC.Scenes.clean(offering_container)
 	offering_container = Node2D.new()
 	
+	if construction_deck.size() + discard_deck.size() < 3:
+		show_ai_score()
+		return
+		
 	var choices_container = GridContainer.new()
 	choices_container.set_position(Vector2(350,60))
 	choices_container.set_columns(3)
-	var first_card = construction_deck.draw_top()
-	if first_card == null:
-		construction_deck.add_all(discard_deck)
-		discard_deck.clear()
-		construction_deck.shuffle()
-		first_card = construction_deck.draw_top()
-	var second_card = construction_deck.draw_top()
-	if second_card == null:
-		construction_deck.add_all(discard_deck)
-		discard_deck.clear()
-		construction_deck.shuffle()
-		second_card = construction_deck.draw_top()
-	var third_card = construction_deck.draw_top()
-	if third_card == null:
-		construction_deck.add_all(discard_deck)
-		discard_deck.clear()
-		construction_deck.shuffle()
-		third_card = construction_deck.draw_top()
-	# TODO If any of the revealed cards are the solo plan, then add to a separate AI deck and draw again
+	var first_card = draw_construction_card()
+	var second_card = draw_construction_card()
+	var third_card = draw_construction_card()
+	
+	
+	if ai_completed_plans.size() >= 3:
+		show_ai_score()
+		return
+		
 	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
 	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
 	choices_container.add_child(first_front_button)
@@ -235,6 +227,11 @@ func draw_offering():
 	top_card.back_texture.set_position(Vector2(100,60))
 	offering_container.add_child(top_card.back_texture)
 	
+	var top_ai_card = ai_deck.top_card()
+	if top_ai_card != null:
+		top_ai_card.back_texture.set_position(Vector2(1100, 500))
+		offering_container.add_child(top_ai_card.back_texture)
+	
 	companion_container.add_child(offering_container)
 
 func _on_choose_offer(pick, discards):
@@ -242,5 +239,32 @@ func _on_choose_offer(pick, discards):
 	discard_deck.put_on_top(discards.pop_back())
 	discard_deck.put_on_top(discards.pop_back())
 	draw_offering()
+	
+func show_ai_score():
+	SC.Scenes.clean(companion_container)
+	scoring_container = Container.new()
+	
+	var scored_cards_container = GridContainer.new()
+	scored_cards_container.set_position(Vector2(300,0))
+	scored_cards_container.set_columns(6)
+	scoring_container.add_child(scored_cards_container)
+
+	var scored_cards = ai_deck.get_all_cards()
+	for card in scored_cards:
+		scored_cards_container.add_child(card.back_texture)
+	
+	var ai_score = AIScore.new()
+	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, 0)
+	ai_score.calculate()
+	var ai_score_label = Label.new()	
+	ai_score_label.set_position(Vector2(10,10))
+	ai_score_label.text = ai_score.format_breakdown()
+	scoring_container.add_child(ai_score_label)
+
+	var solo_ai = solo_ais[selected_ai_name]	
+	solo_ai.texture.set_position(Vector2(0,300))
+	scoring_container.add_child(solo_ai.texture)
+
+	container.add_child(scoring_container)
 	
 	

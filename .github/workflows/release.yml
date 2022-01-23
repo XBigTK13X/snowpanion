@@ -19,6 +19,7 @@ jobs:
           lfs: true
       - name: Setup
         run: |
+          cp export_presets_ci.cfg export_presets.cfg
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Windows Build
@@ -43,6 +44,7 @@ jobs:
           lfs: true
       - name: Setup
         run: |
+          cp export_presets_ci.cfg export_presets.cfg
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Linux Build
@@ -67,6 +69,7 @@ jobs:
           lfs: true
       - name: Setup
         run: |
+          cp export_presets_ci.cfg export_presets.cfg
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Web Build
@@ -101,6 +104,7 @@ jobs:
           lfs: true
       - name: Setup
         run: |
+          cp export_presets_ci.cfg export_presets.cfg
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Mac Build

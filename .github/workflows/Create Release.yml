@@ -19,7 +19,6 @@ jobs:
       with:
         fetch-depth: 0
     - name: Copy godot export config
-      uses: actions/checkout@
       run: |
         cp export_presets_ci.cfg export_presets.cfg
     - name: Run godot exports

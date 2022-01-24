@@ -1,4 +1,4 @@
-# Whenever a push is made to the master branch then run the job
+name: "Export godot artifacts"
 on: 
   workflow_dispatch
 

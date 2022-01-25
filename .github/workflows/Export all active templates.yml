@@ -1,4 +1,4 @@
-name: "Export All Except Android"
+name: "Export all active templates"
 on: 
   workflow_dispatch:
   push:

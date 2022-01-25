@@ -24,13 +24,13 @@ jobs:
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Windows Build
         run: |
-          mkdir -v -p build/windows
+          mkdir -v -p output/windows
           godot -v --export "Windows Desktop" output/windows/$EXPORT_NAME.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: windows
-          path: build/windows
+          path: output/windows
 
   export-linux:
     name: Linux Export
@@ -49,13 +49,13 @@ jobs:
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Linux Build
         run: |
-          mkdir -v -p build/linux
+          mkdir -v -p output/linux
           godot -v --export "Linux/X11" output/linux/$EXPORT_NAME.x86_64
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: linux
-          path: build/linux
+          path: output/linux
 
   export-web:
     name: Web Export
@@ -74,13 +74,13 @@ jobs:
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Web Build
         run: |
-          mkdir -v -p build/web
+          mkdir -v -p output/web
           godot -v --export "HTML5" ./output/web/index.html
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: web
-          path: build/web
+          path: output/web
       # Installing rsync is needed in order to deploy to GitHub Pages. Without it, the build will fail.
       - name: Install rsync
         run: |
@@ -90,7 +90,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: build/web # The folder the action should deploy.
+          FOLDER: output/web # The folder the action should deploy.
 
   export-mac:
     name: Mac Export
@@ -109,10 +109,10 @@ jobs:
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Mac Build
         run: |
-          mkdir -v -p build/mac
-          godot -v --export "Mac OSX" ../build/mac/$EXPORT_NAME.zip
+          mkdir -v -p output/mac
+          godot -v --export "Mac OSX" output/mac/$EXPORT_NAME.zip
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: mac
-          path: build/mac
+          path: output/mac

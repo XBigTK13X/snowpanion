@@ -2,7 +2,10 @@ name: "Export godot artifacts"
 on: 
   workflow_dispatch
 
-# TODO See https://github.com/godotengine/godot/issues/38120
+# Android build errors out with
+# ADDINGERROR: Project export failed with error code 12 for preset "Android".
+# at: _fs_changed (editor/editor_node.cpp:801)
+#  : res/layout-v21/notification_action.xml
 
 jobs:
   export-godot-targets:

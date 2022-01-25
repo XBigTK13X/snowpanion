@@ -2,6 +2,8 @@ name: "Export godot artifacts"
 on: 
   workflow_dispatch
 
+# TODO See https://github.com/godotengine/godot/issues/38120
+
 jobs:
   export-godot-targets:
     runs-on: ubuntu-latest

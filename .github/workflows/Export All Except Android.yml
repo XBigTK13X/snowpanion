@@ -1,7 +1,9 @@
 name: "Export All Except Android"
 on: 
-  workflow_dispatch
-
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 env:
   GODOT_VERSION: 3.3.4
   EXPORT_NAME: snowpanion

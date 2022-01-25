@@ -5,6 +5,7 @@ var Chrome
 var Clone
 var RNG
 var Scenes
+var Settings
 
 func _singleton(file):
 	var node = load('res://singleton/' + file + '.gd').new()
@@ -18,3 +19,4 @@ func reset():
 	Clone = _singleton('clone')
 	RNG = _singleton('rng')
 	Scenes = _singleton('scenes')
+	Settings = _singleton('settings')

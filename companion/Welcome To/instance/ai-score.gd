@@ -15,6 +15,20 @@ func init(ai, expansion, objectives, deck, player_temp_count):
 	_deck = deck
 	_player_temp_count = player_temp_count
 
+func score_estate(estate, estate_weight, bis_weight):
+	for estate_card in estate.cards:
+		if estate_card._kind == 'bis':
+			if estate.has_agent:
+				estate.score += bis_weight * estate_weight
+			else:				
+				estate.score += bis_weight
+		else:
+			if estate.has_agent:
+				estate.score += estate_weight
+			else:
+				estate.score += 1
+	return estate.score
+
 func calculate():
 	breakdown = {
 		expansion = _expansion.bonus_points,
@@ -39,19 +53,8 @@ func calculate():
 	for card_index in range(0,_deck.size()):
 		var card = _deck[card_index]
 		if card._kind == 'fence':
-			breakdown.fences += fence_weight
-			for estate_card in estate.cards:
-				if estate_card._kind == 'bis':
-					if estate.has_agent:
-						estate.score += bis_weight * estate_weight
-					else:				
-						estate.score += bis_weight
-				else:
-					if estate.has_agent:
-						estate.score += estate_weight
-					else:
-						estate.score += 1
-			estate_scores.push_back(estate.score)
+			breakdown.fences += fence_weight			
+			estate_scores.push_back(score_estate(estate, bis_weight, estate_weight))
 			estate = {cards = [], score = 0}
 		else:
 			estate.cards.push_back(card)			
@@ -65,6 +68,9 @@ func calculate():
 		elif card._kind == 'estate':
 			estate.has_agent = true
 
+	# Score the final estate
+	estate_scores.push_back(score_estate(estate, bis_weight, estate_weight))
+
 	if temp_count == 0:
 		breakdown.temp_bonus = 0
 	elif temp_count >= _player_temp_count:
@@ -75,11 +81,10 @@ func calculate():
 	breakdown.estates_bonus = 0
 	breakdown.estates = []
 	estate_scores.sort()
-	for ii in range(0,5):
-		print("Testing "+str(ii))
+
+	# If more than five estates were created, only count the five highest scores
 	if estate_scores.size() > 5:
 		for ii in range(0,5):
-			# TODO Should it be 5 or 4? Not sure if Godot is inclusive on range
 			print("Scoring AI over 5 estates: "+str(ii))
 			breakdown.estates_bonus += estate_scores[estate_scores.size() - ii]
 			breakdown.estates.push_front(estate_scores[estate_scores.size() - ii])

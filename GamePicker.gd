@@ -14,13 +14,7 @@ func _ready():
 	game_grid.set_columns(6)	
 
 	for game in games:	
-		var game_button = Button.new()
-		game_button.text = game
-		game_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-		game_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
-		game_button.rect_min_size = Vector2(400,200)
-		game_button.connect("pressed", self, "_on_game_chosen", [game])
-		game_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var game_button = SC.Chrome.text_button(self, game, "_on_game_chosen", [game])
 		game_grid.add_child(game_button)		
 		
 	game_picker_container.add_child(game_grid)

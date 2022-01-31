@@ -53,3 +53,20 @@ func center_container():
 	container.anchor_left = 0.5
 	container.set_size(SC.Settings.display_size())
 	return container
+
+func text_button(context, text, call, args):
+	var button = Button.new()
+	button.text = text
+	button.set('custom_fonts/font', SC.Assets.get_font('Text Button'))
+	button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+	button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+	button.rect_min_size = Vector2(400,200)
+	button.connect("pressed", context, call, args)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	return button
+
+func label(text):
+	var label = Label.new()
+	label.set('custom_fonts/font', SC.Assets.get_font('Text Label'))
+	label.text = text
+	return label

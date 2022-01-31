@@ -19,7 +19,7 @@ var objective_cards = ['n1','n2','n3']
 
 var deck_cards = []
 
-var _count_label = Label.new()
+var _count_label = SC.Chrome.label('')
 
 func setup():
 	for kind in card_numbers:			

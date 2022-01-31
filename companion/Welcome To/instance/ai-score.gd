@@ -106,11 +106,12 @@ func format_breakdown():
 		if estate_index < breakdown.estates.size() - 1:
 			formatted_estates += ', '
 	var result = ""
+	result += 'Expansion: ' + str(breakdown.expansion) + '\n'
 	result += 'Parks: ' + str(breakdown.parks) + '\n'
 	result += 'Pools: ' + str(breakdown.pools) + '\n'
 	result += 'Fences: ' + str(breakdown.fences) + '\n'
-	result += 'Temps: ' + str(breakdown.temps) + '\n'
-	result += 'Expansion: ' + str(breakdown.expansion) + '\n'
+	result += 'Temps: ' + str(breakdown.temps) + '\n'	
+	result += 'Player Temps: ' + str(_player_temp_count) + '\n'
 	result += 'Temp Bonus: ' + str(breakdown.temp_bonus) + '\n'
 	result += 'Estates: ' + formatted_estates + '\n'
 	result += 'Total: '+ str(breakdown.total)

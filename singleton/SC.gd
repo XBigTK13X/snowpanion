@@ -10,6 +10,8 @@ var Settings
 func _singleton(file):
 	var node = load('res://singleton/' + file + '.gd').new()
 	node.name = file
+	if(node.has_method('static_init')):
+		node.static_init()
 	add_child(node)
 	return node
 

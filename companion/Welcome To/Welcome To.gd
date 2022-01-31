@@ -8,10 +8,14 @@ var ai_picker_container
 var expansion_picker_container
 var companion_container
 var offering_container
+var player_temp_container
+var player_temp_count_label
 var scoring_container
+
 
 var selected_ai_name
 var selected_expansion_name
+var player_temp_count
 
 var construction_deck
 var ai_deck
@@ -89,8 +93,6 @@ func show_ai_picker():
 			atlas_texture.set_atlas(back_texture)
 		atlas_texture.set_region(Rect2(15 + (texture_column * (210 + 10)) + solo_ai.nudge.x, 15 + (texture_row * (320 + 30)) + solo_ai.nudge.y, 210, 320))
 		atlas_texture.set_filter_clip(true)
-		var margin = 50
-		atlas_texture.set_margin(Rect2(margin,margin,margin,margin))
 		solo_ais[solo_ai_name].texture = TextureRect.new()
 		solo_ais[solo_ai_name].texture.texture = atlas_texture
 		var ai_button = SC.Chrome.highlight_on_hover_button(atlas_texture)
@@ -115,13 +117,7 @@ func show_expansion_picker():
 		var expansion = expansions[expansion_name]
 		if ! expansion.supported:
 			continue
-		var expansion_button = Button.new()
-		expansion_button.text = expansion.display
-		expansion_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-		expansion_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
-		expansion_button.rect_min_size = Vector2(400,200)
-		expansion_button.connect("pressed", self, "_on_expansion_pressed", [expansion_name])
-		expansion_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var expansion_button = SC.Chrome.text_button(self, expansion.display, "_on_expansion_pressed", [expansion_name])
 		expansion_grid.add_child(expansion_button)		
 	
 	expansion_picker_container.add_child(expansion_grid)
@@ -141,8 +137,7 @@ func show_companion():
 	companion_container.add_child(solo_ai.texture)
 	
 	var expansion = expansions[selected_expansion_name]
-	var expansion_label = Label.new()
-	expansion_label.text = "Expansion: " + expansion.display
+	var expansion_label = SC.Chrome.label("Expansion: " + expansion.display)
 	expansion_label.set_position(Vector2(1100,10))
 	companion_container.add_child(expansion_label)
 	
@@ -159,8 +154,7 @@ func show_construction_cards():
 	construction_deck.setup()
 	construction_deck.shuffle()
 	
-	var pick_label = Label.new()
-	pick_label.text = "Select a card to give to the AI"
+	var pick_label = SC.Chrome.label("Select a card to give to the AI")
 	pick_label.set_position(Vector2(350,10))
 	companion_container.add_child(pick_label)
 	
@@ -192,7 +186,7 @@ func draw_offering():
 	offering_container = Node2D.new()
 	
 	if construction_deck.size() + discard_deck.size() < 3:
-		show_ai_score()
+		show_player_temp()
 		return
 		
 	var choices_container = GridContainer.new()
@@ -204,7 +198,7 @@ func draw_offering():
 	
 	
 	if ai_completed_plans.size() >= 3:
-		show_ai_score()
+		show_player_temp()
 		return
 		
 	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
@@ -249,31 +243,58 @@ func _on_choose_offer(pick, discards):
 	discard_deck.put_on_top(discards.pop_back())
 	draw_offering()
 	
-func show_ai_score():
+func show_player_temp():
 	SC.Scenes.clean(companion_container)
-	scoring_container = Container.new()
+	player_temp_container = SC.Chrome.center_container()
+
+	var box = GridContainer.new()
+	box.set_columns(3)
+	player_temp_container.add_child(box)
+
+	var player_temp_button = SC.Chrome.highlight_on_hover_button(SC.Assets.load("Welcome To", "back-temp.jpg"))
+	player_temp_button.connect('pressed', self, "_on_player_temp_click")
+	box.add_child(player_temp_button)
+
+	player_temp_count = 0
+	player_temp_count_label = SC.Chrome.label("0")
+	box.add_child(player_temp_count_label)
+
+	var next_button = SC.Chrome.text_button(self, "Done", "show_ai_score", [])
+	box.add_child(next_button)
+	container.add_child(player_temp_container)
+
+func _on_player_temp_click():
+	player_temp_count += 1
+	player_temp_count_label.text = str(player_temp_count)
+
+func show_ai_score():
+	SC.Scenes.clean(player_temp_container)
+	scoring_container = SC.Chrome.center_container()
 	
 	var scored_cards_container = GridContainer.new()
-	scored_cards_container.set_position(Vector2(300,0))
 	scored_cards_container.set_columns(6)
-	scoring_container.add_child(scored_cards_container)
 
 	var scored_cards = ai_deck.get_all_cards()
 	for card in scored_cards:
 		scored_cards_container.add_child(card.back_texture)
 	
 	var ai_score = AIScore.new()
-	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, 0)
+	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, player_temp_count)
 	ai_score.calculate()
-	var ai_score_label = Label.new()	
-	ai_score_label.set_position(Vector2(10,10))
-	ai_score_label.text = ai_score.format_breakdown()
-	scoring_container.add_child(ai_score_label)
+	var ai_score_label = SC.Chrome.label(ai_score.format_breakdown())
 
-	var solo_ai = solo_ais[selected_ai_name]	
-	solo_ai.texture.set_position(Vector2(0,300))
-	scoring_container.add_child(solo_ai.texture)
+	var solo_ai = solo_ais[selected_ai_name]
+
+	var hbox = HBoxContainer.new()
+	var vbox = VBoxContainer.new()
+	hbox.add_child(vbox)
+	vbox.add_child(solo_ai.texture)
+	vbox.add_child(ai_score_label)
+	hbox.add_child(vbox)
+	hbox.add_child(scored_cards_container)
+	scoring_container.add_child(hbox)
 
 	container.add_child(scoring_container)
-	
+
+
 	

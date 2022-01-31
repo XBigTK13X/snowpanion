@@ -4,7 +4,7 @@ var ConstructionCard = load('res://companion/Welcome To/instance/construction-ca
 var SoloPlanCard = load('res://companion/Welcome To/instance/solo-plan-card.gd')
 var PlanCard = load('res://companion/Welcome To/instance/plan-card.gd')
 
-# The 0th element in the deck is the top. The sizeth element is the bottom.
+# The 0th element in the deck is the top. The size-th element is the bottom.
 
 var card_numbers = {
 	fence = [1,2,3,5,5,6,6,7,8,8,9,10,10,11,11,13,14,15],
@@ -28,15 +28,17 @@ func setup():
 			card.init(kind, card_numbers[kind][number_index], number_index)
 			deck_cards.push_back(card)
 	var n1_solo_plan = SoloPlanCard.new() 
-	n1_solo_plan.init("n1",5)
-	# TODO - Replace this insert with the randomized lower half as described in the rules
-	deck_cards.push_back(n1_solo_plan)
+	var n1_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
+	n1_solo_plan.init("n1", 5)
+	deck_cards.insert(n1_insert_index, n1_solo_plan)
 	var n2_solo_plan = SoloPlanCard.new() 
-	n2_solo_plan.init("n2",8)
-	deck_cards.push_back(n2_solo_plan)
+	n2_solo_plan.init("n2", 8)
+	var n2_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
+	deck_cards.insert(n2_insert_index, n2_solo_plan)
 	var n3_solo_plan = SoloPlanCard.new() 
-	n3_solo_plan.init("n3",7)
-	deck_cards.push_back(n3_solo_plan)
+	n3_solo_plan.init("n3", 7)
+	var n3_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
+	deck_cards.insert(n3_insert_index, n3_solo_plan)
 	_update_deck_count()
 
 func _update_deck_count():

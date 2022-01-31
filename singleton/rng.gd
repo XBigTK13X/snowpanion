@@ -1,13 +1,19 @@
 extends Node
 
-var global_rng = RandomNumberGenerator.new()
+var global_rng
+
+func static_init():
+	global_rng = RandomNumberGenerator.new()
+	global_rng.randomize()
 
 func set_seed(int_seed):
 	global_rng.seed = int_seed
 
-func integer(ceiling):
-	return global_rng.randi_range(0,ceiling)
-	
+func integer(minimum, maximum = null):
+	if (maximum == null):
+		return global_rng.randi_range(0,minimum)
+	return global_rng.randi_range(minimum,maximum)
+
 func get_state():
 	return global_rng.get_state()
 

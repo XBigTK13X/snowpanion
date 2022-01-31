@@ -1,18 +1,29 @@
 extends Node
 
+var games = [
+	"Welcome To"
+]
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	SC.reset()
 
-func _on_WelcomeToButton_pressed():
-	return get_tree().change_scene("res://companion/Welcome To/Welcome To.tscn")
+	var game_picker_container = SC.Chrome.center_container()
+	add_child(game_picker_container)
+	
+	var game_grid = GridContainer.new()
+	game_grid.set_columns(6)	
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	for game in games:	
+		var game_button = Button.new()
+		game_button.text = game
+		game_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+		game_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+		game_button.rect_min_size = Vector2(400,200)
+		game_button.connect("pressed", self, "_on_game_chosen", [game])
+		game_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		game_grid.add_child(game_button)		
+		
+	game_picker_container.add_child(game_grid)
+
+func _on_game_chosen(game):
+	return get_tree().change_scene("res://companion/" + game + "/" + game + ".tscn")

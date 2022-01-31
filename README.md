@@ -8,14 +8,7 @@ Snowpanion does not provide a digital implementation of any board game. It only 
 
 ## Supported Games
 
-### In Progress
-- Welcome To (work in progress)
-
-### Planned
-- Wingspan (planned)
-- Hadrian's Wall (planned)
-- Fleet: The Dice Game (planned)
-- Caverna
+[See the WIKI entry on supported games.](https://github.com/XBigTK13X/snowpanion/wiki/Supported-Games)
 
 ## Goals
 

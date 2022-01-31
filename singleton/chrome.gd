@@ -46,3 +46,10 @@ func invisible_button():
 	node.add_stylebox_override("disabled",hidden_button_style)
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	return node
+
+func center_container():
+	var container = CenterContainer.new()
+	container.anchor_top = 0.5
+	container.anchor_left = 0.5
+	container.set_size(SC.Settings.display_size())
+	return container

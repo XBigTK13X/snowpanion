@@ -55,7 +55,7 @@ func calculate():
 		if card._kind == 'fence':
 			breakdown.fences += fence_weight			
 			estate_scores.push_back(score_estate(estate, bis_weight, estate_weight))
-			estate = {cards = [], score = 0}
+			estate = {cards = [], score = 0, has_agent = false}
 		else:
 			estate.cards.push_back(card)			
 		if card._kind == 'pool':

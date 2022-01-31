@@ -64,8 +64,7 @@ var expansions = {
 	outbreak = {display="Zombie Outbreak", bonus_points=0, supported=false}
 }
 
-func _ready():
-	SC.reset()
+func _ready():	
 	container = get_node("/root/Container")
 	show_ai_picker()
 	
@@ -73,9 +72,11 @@ func show_ai_picker():
 	var front_texture = SC.Assets.load("Welcome To", "front-solo.jpg")
 	var back_texture = SC.Assets.load("Welcome To", "back-solo.jpg")
 	
-	ai_picker_container = GridContainer.new()
-	ai_picker_container.set_columns(5)
+	ai_picker_container = SC.Chrome.center_container()
 	container.add_child(ai_picker_container)
+
+	var ai_grid = GridContainer.new()
+	ai_grid.set_columns(5)
 	
 	for solo_ai_name in solo_ais:
 		var atlas_texture = AtlasTexture.new()
@@ -94,28 +95,36 @@ func show_ai_picker():
 		solo_ais[solo_ai_name].texture.texture = atlas_texture
 		var ai_button = SC.Chrome.highlight_on_hover_button(atlas_texture)
 		ai_button.connect("pressed", self, "_on_solo_ai_pressed", [solo_ai_name])
-		ai_picker_container.add_child(ai_button)
+		ai_grid.add_child(ai_button)
+	
+	ai_picker_container.add_child(ai_grid)
 	
 func _on_solo_ai_pressed(solo_ai_name):
 	selected_ai_name = solo_ai_name
-	remove_child(ai_picker_container)
+	container.remove_child(ai_picker_container)
 	show_expansion_picker()
 
 func show_expansion_picker():
-	expansion_picker_container = GridContainer.new()
-	expansion_picker_container.set_columns(3)
+	expansion_picker_container = SC.Chrome.center_container()
 	container.add_child(expansion_picker_container)
-	
+
+	var expansion_grid = GridContainer.new()
+	expansion_grid.set_columns(3)	
+
 	for expansion_name in expansions:
 		var expansion = expansions[expansion_name]
 		if ! expansion.supported:
 			continue
 		var expansion_button = Button.new()
 		expansion_button.text = expansion.display
-		expansion_button.rect_min_size = Vector2(300,100)
+		expansion_button.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+		expansion_button.set_v_size_flags(Control.SIZE_EXPAND_FILL)
+		expansion_button.rect_min_size = Vector2(400,200)
 		expansion_button.connect("pressed", self, "_on_expansion_pressed", [expansion_name])
 		expansion_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		expansion_picker_container.add_child(expansion_button)		
+		expansion_grid.add_child(expansion_button)		
+	
+	expansion_picker_container.add_child(expansion_grid)
 
 func _on_expansion_pressed(expansion_name):
 	selected_expansion_name = expansion_name

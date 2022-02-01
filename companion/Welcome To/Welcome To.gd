@@ -77,7 +77,7 @@ func show_ai_picker():
 	var back_texture = SC.Assets.load("Welcome To", "back-solo.jpg")
 	
 	ai_picker_container = SC.Chrome.center_container()
-	container.add_child(ai_picker_container)
+	SC.link(container,ai_picker_container)
 
 	var ai_grid = GridContainer.new()
 	ai_grid.set_columns(5)
@@ -95,20 +95,21 @@ func show_ai_picker():
 		atlas_texture.set_filter_clip(true)
 		solo_ais[solo_ai_name].texture = TextureRect.new()
 		solo_ais[solo_ai_name].texture.texture = atlas_texture
+		solo_ais[solo_ai_name].name = solo_ai_name
 		var ai_button = SC.Chrome.highlight_on_hover_button(atlas_texture)
 		ai_button.connect("pressed", self, "_on_solo_ai_pressed", [solo_ai_name])
-		ai_grid.add_child(ai_button)
+		SC.link(ai_grid,ai_button)
 	
-	ai_picker_container.add_child(ai_grid)
+	SC.link(ai_picker_container,ai_grid)
 	
 func _on_solo_ai_pressed(solo_ai_name):
 	selected_ai_name = solo_ai_name
-	SC.Scenes.clean(ai_picker_container)
+	SC.clean(ai_picker_container)
 	show_expansion_picker()
 
 func show_expansion_picker():
 	expansion_picker_container = SC.Chrome.center_container()
-	container.add_child(expansion_picker_container)
+	SC.link(container,expansion_picker_container)
 
 	var expansion_grid = GridContainer.new()
 	expansion_grid.set_columns(3)	
@@ -118,18 +119,18 @@ func show_expansion_picker():
 		if ! expansion.supported:
 			continue
 		var expansion_button = SC.Chrome.text_button(self, expansion.display, "_on_expansion_pressed", [expansion_name])
-		expansion_grid.add_child(expansion_button)		
+		SC.link(expansion_grid,expansion_button)		
 	
-	expansion_picker_container.add_child(expansion_grid)
+	SC.link(expansion_picker_container,expansion_grid)
 
 func _on_expansion_pressed(expansion_name):
-	selected_expansion_name = expansion_name
-	container.remove_child(expansion_picker_container)
+	selected_expansion_name = expansion_name	
 	show_companion()
 
 func show_companion():
+	SC.clean(expansion_picker_container)
 	companion_container = Container.new()	
-	container.add_child(companion_container)	
+	SC.link(container,companion_container)	
 	
 	show_city_plans()
 	show_construction_cards()
@@ -161,8 +162,7 @@ func draw_construction_card():
 func update_game_area():
 	var solo_ai = solo_ais[selected_ai_name]	
 	if game_area_container != null:
-		SC.Scenes.clean(game_area_container)
-		solo_ai.texture.get_parent().remove_child(solo_ai.texture)
+		SC.clean(game_area_container)
 		
 	game_area_container = SC.Chrome.center_container()
 	var hbox = HBoxContainer.new()
@@ -193,22 +193,22 @@ func update_game_area():
 		
 	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
 	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
-	choices_container.add_child(first_front_button)
+	SC.link(choices_container,first_front_button)
 	var second_front_button = SC.Chrome.highlight_on_hover_button(second_card.front_texture.texture)
 	second_front_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
-	choices_container.add_child(second_front_button)
+	SC.link(choices_container,second_front_button)
 	var third_front_button = SC.Chrome.highlight_on_hover_button(third_card.front_texture.texture)
 	third_front_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
-	choices_container.add_child(third_front_button)
+	SC.link(choices_container,third_front_button)
 	var first_back_button = SC.Chrome.highlight_on_hover_button(first_card.back_texture.texture)
 	first_back_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
-	choices_container.add_child(first_back_button)
+	SC.link(choices_container,first_back_button)
 	var second_back_button = SC.Chrome.highlight_on_hover_button(second_card.back_texture.texture)
 	second_back_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
-	choices_container.add_child(second_back_button)
+	SC.link(choices_container,second_back_button)
 	var third_back_button = SC.Chrome.highlight_on_hover_button(third_card.back_texture.texture)
 	third_back_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
-	choices_container.add_child(third_back_button)	
+	SC.link(choices_container,third_back_button)	
 	
 	var top_card = construction_deck.top_card()
 	if top_card == null:
@@ -219,25 +219,25 @@ func update_game_area():
 	
 	var top_ai_card = ai_deck.top_card()	
 	
-	first_column.add_child(top_card.back_texture)
-	first_column.add_child(count_label)
-	second_column.add_child(pick_label)
-	second_column.add_child(choices_container)		
-	third_column.add_child(expansion_label)
-	third_column.add_child(solo_ai.texture)		
+	SC.link(first_column,top_card.back_texture)
+	SC.link(first_column,count_label)
+	SC.link(second_column,pick_label)
+	SC.link(second_column,choices_container)		
+	SC.link(third_column,expansion_label)
+	SC.link(third_column,solo_ai.texture)		
 
 	if top_ai_card != null:
-		third_column.add_child(top_ai_card.back_texture)
+		SC.link(third_column,top_ai_card.back_texture)
 
-	third_column.add_child(ai_count_label)
+	SC.link(third_column,ai_count_label)
 
 	hbox.set("custom_constants/separation", 100)
 
-	hbox.add_child(first_column)
-	hbox.add_child(second_column)
-	hbox.add_child(third_column)
-	game_area_container.add_child(hbox)	
-	companion_container.add_child(game_area_container)		
+	SC.link(hbox,first_column)
+	SC.link(hbox,second_column)
+	SC.link(hbox,third_column)
+	SC.link(game_area_container,hbox)	
+	SC.link(companion_container,game_area_container)		
 
 
 func _on_choose_offer(pick, discards):
@@ -247,7 +247,7 @@ func _on_choose_offer(pick, discards):
 	update_game_area()
 	
 func show_player_temp():
-	SC.Scenes.clean(companion_container)
+	SC.clean(companion_container)
 	player_temp_container = SC.Chrome.center_container()
 
 	var box = VBoxContainer.new()
@@ -258,20 +258,20 @@ func show_player_temp():
 	for ii in range(0,25):
 		var player_temp_button = SC.Chrome.text_button(self, str(ii), "_on_player_temp_click", [ii])
 		player_temp_button.rect_min_size = Vector2(200,100)
-		grid.add_child(player_temp_button)
+		SC.link(grid,player_temp_button)
 	
 	var label = SC.Chrome.label("How many temp agencies were used by the player?")
-	box.add_child(label)	
-	box.add_child(grid)
-	player_temp_container.add_child(box)
-	container.add_child(player_temp_container)
+	SC.link(box,label)	
+	SC.link(box,grid)
+	SC.link(player_temp_container,box)
+	SC.link(container,player_temp_container)
 
 func _on_player_temp_click(amount):
 	player_temp_count = amount
 	show_ai_score()
 
 func show_ai_score():
-	SC.Scenes.clean(player_temp_container)	
+	SC.clean(player_temp_container)	
 	scoring_container = SC.Chrome.center_container()
 	
 	var scored_cards_container = GridContainer.new()
@@ -280,9 +280,7 @@ func show_ai_score():
 	var scored_cards = ai_deck.get_all_cards()
 	# TODO Put inside a scroll container
 	for card in scored_cards:
-		if(card.back_texture.get_parent() != null):
-			card.back_texture.get_parent().remove_child(card.back_texture)
-		scored_cards_container.add_child(card.back_texture)
+		SC.link(scored_cards_container,card.back_texture)
 	
 	var ai_score = AIScore.new()
 	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, player_temp_count)
@@ -290,19 +288,17 @@ func show_ai_score():
 	var ai_score_label = SC.Chrome.label(ai_score.format_breakdown())
 
 	var solo_ai = solo_ais[selected_ai_name]
-	if(solo_ai.texture.get_parent() != null):
-		solo_ai.texture.get_parent().remove_child(solo_ai.texture)
 
 	var hbox = HBoxContainer.new()
 	var vbox = VBoxContainer.new()
-	hbox.add_child(vbox)
-	vbox.add_child(solo_ai.texture)
-	vbox.add_child(ai_score_label)
-	hbox.add_child(vbox)
-	hbox.add_child(scored_cards_container)
-	scoring_container.add_child(hbox)
+	SC.link(hbox,vbox)
+	SC.link(vbox,solo_ai.texture)
+	SC.link(vbox,ai_score_label)
+	SC.link(hbox,vbox)
+	SC.link(hbox,scored_cards_container)
+	SC.link(scoring_container,hbox)
 
-	container.add_child(scoring_container)
+	SC.link(container,scoring_container)
 
 
 	

@@ -4,8 +4,19 @@ var Assets
 var Chrome
 var Clone
 var RNG
-var Scenes
 var Settings
+
+func clean(node):
+	node.get_parent().remove_child(node)
+	for n in node.get_children():
+		node.remove_child(n)
+	node.queue_free()
+
+func link(parent, child):
+	var current_parent = child.get_parent()
+	if(current_parent != null):
+		current_parent.remove_child(child)
+	parent.add_child(child)
 
 func _singleton(file):
 	var node = load('res://singleton/' + file + '.gd').new()
@@ -20,5 +31,4 @@ func reset():
 	Chrome = _singleton('chrome')
 	Clone = _singleton('clone')
 	RNG = _singleton('rng')
-	Scenes = _singleton('scenes')
 	Settings = _singleton('settings')

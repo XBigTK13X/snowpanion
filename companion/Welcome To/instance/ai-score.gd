@@ -15,19 +15,16 @@ func init(ai, expansion, objectives, deck, player_temp_count):
 	_deck = deck
 	_player_temp_count = player_temp_count
 
-func score_estate(estate, estate_weight, bis_weight):
+func score_estate(estate, bis_weight, estate_weight):
+	var house_count = 0
 	for estate_card in estate.cards:
 		if estate_card._kind == 'bis':
-			if estate.has_agent:
-				estate.score += bis_weight * estate_weight
-			else:				
-				estate.score += bis_weight
+			house_count += bis_weight
 		else:
-			if estate.has_agent:
-				estate.score += estate_weight
-			else:
-				estate.score += 1
-	return estate.score
+			house_count += 1
+	if estate.has_agent:
+		return house_count * estate_weight
+	return house_count
 
 func calculate():
 	breakdown = {
@@ -35,7 +32,8 @@ func calculate():
 		parks = 0,
 		fences = 0,
 		pools = 0,
-		temps = 0
+		temps = 0,
+		top_five_estates = null
 	} 
 	var park_weight = _ai.points[0]
 	var pool_weight = _ai.points[1]
@@ -48,14 +46,14 @@ func calculate():
 
 	var estate_scores = []
 
-	var estate = {cards = [], score = 0, has_agent = false}
+	var estate = {cards = [], has_agent = false}
 
 	for card_index in range(0,_deck.size()):
 		var card = _deck[card_index]
 		if card._kind == 'fence':
 			breakdown.fences += fence_weight			
 			estate_scores.push_back(score_estate(estate, bis_weight, estate_weight))
-			estate = {cards = [], score = 0, has_agent = false}
+			estate = {cards = [], has_agent = false}
 		else:
 			estate.cards.push_back(card)			
 		if card._kind == 'pool':
@@ -79,19 +77,20 @@ func calculate():
 		breakdown.temp_bonus = 4
 
 	breakdown.estates_bonus = 0
-	breakdown.estates = []
-	estate_scores.sort()
+	breakdown.estates = []	
 
-	# If more than five estates were created, only count the five highest scores
+	for score in estate_scores:
+		breakdown.estates_bonus += score
+		breakdown.estates.push_back(score)
+
 	if estate_scores.size() > 5:
+		var sorted_estate_scores = SC.Clone.deep(estate_scores)
+		sorted_estate_scores.sort()
+		breakdown.estate_bonus = 0
+		breakdown.top_five_estates = []		
 		for ii in range(0,5):
-			print("Scoring AI over 5 estates: "+str(ii))
-			breakdown.estates_bonus += estate_scores[estate_scores.size() - ii - 1]
-			breakdown.estates.push_front(estate_scores[estate_scores.size() - ii - 1])
-	else:
-		for score in estate_scores:
-			breakdown.estates_bonus += score
-			breakdown.estates.push_front(score)
+			breakdown.estates_bonus += sorted_estate_scores[sorted_estate_scores.size() - ii - 1]
+			breakdown.top_five_estates.push_back(sorted_estate_scores[sorted_estate_scores.size() - ii - 1])
 
 	breakdown.total = breakdown.expansion + breakdown.parks + breakdown.fences + breakdown.pools + breakdown.temps
 	breakdown.total += breakdown.temp_bonus + breakdown.estates_bonus
@@ -113,6 +112,14 @@ func format_breakdown():
 	result += 'Temps: ' + str(breakdown.temps) + '\n'	
 	result += 'Player Temps: ' + str(_player_temp_count) + '\n'
 	result += 'Temp Bonus: ' + str(breakdown.temp_bonus) + '\n'
-	result += 'Estates: ' + formatted_estates + '\n'
+	result += 'Estates:\n  ' + formatted_estates + '\n'
+	if(breakdown.top_five_estates != null):
+		var formatted_top_five_estates = ''
+		for estate_index in breakdown.top_five_estates.size():
+			var estate = breakdown.top_five_estates[estate_index]
+			formatted_top_five_estates += str(estate)
+			if estate_index < breakdown.top_five_estates.size() - 1:
+				formatted_top_five_estates += ', '
+		result += 'Scored Estates:\n  ' + formatted_top_five_estates + '\n'
 	result += 'Total: '+ str(breakdown.total)
 	return result

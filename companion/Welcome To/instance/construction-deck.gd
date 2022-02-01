@@ -19,8 +19,6 @@ var objective_cards = ['n1','n2','n3']
 
 var deck_cards = []
 
-var _count_label = SC.Chrome.label('')
-
 func setup():
 	for kind in card_numbers:			
 		for number_index in card_numbers[kind].size():
@@ -39,10 +37,7 @@ func setup():
 	n3_solo_plan.init("n3", 7)
 	var n3_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
 	deck_cards.insert(n3_insert_index, n3_solo_plan)
-	_update_deck_count()
-
-func _update_deck_count():
-	_count_label.text = str(deck_cards.size()) + " Cards"
+	#_update_deck_count()
 
 func shuffle():
 	deck_cards.shuffle()
@@ -55,26 +50,28 @@ func top_card():
 
 func put_on_top(card):
 	deck_cards.push_front(card)
-	_update_deck_count()
+	#_update_deck_count()
 
 func count_label():
-	return _count_label
+	var label = SC.Chrome.label('')
+	label.text = str(deck_cards.size()) + " Cards"
+	return label
 
 func draw_top():
 	if deck_cards.size() <= 0:
 		return null
 	var draw = deck_cards.pop_front()
-	_update_deck_count()
+	#_update_deck_count()
 	return draw
 
 
 func add_all(deck):
 	deck_cards += deck.deck_cards
-	_update_deck_count()
+	#_update_deck_count()
 
 func clear():
 	deck_cards = []
-	_update_deck_count()
+	#_update_deck_count()
 
 func size():
 	return deck_cards.size()

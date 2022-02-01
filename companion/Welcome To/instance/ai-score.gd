@@ -86,8 +86,8 @@ func calculate():
 	if estate_scores.size() > 5:
 		for ii in range(0,5):
 			print("Scoring AI over 5 estates: "+str(ii))
-			breakdown.estates_bonus += estate_scores[estate_scores.size() - ii]
-			breakdown.estates.push_front(estate_scores[estate_scores.size() - ii])
+			breakdown.estates_bonus += estate_scores[estate_scores.size() - ii - 1]
+			breakdown.estates.push_front(estate_scores[estate_scores.size() - ii - 1])
 	else:
 		for score in estate_scores:
 			breakdown.estates_bonus += score

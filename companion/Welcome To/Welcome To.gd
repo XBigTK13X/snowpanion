@@ -145,7 +145,7 @@ func show_construction_cards():
 	construction_deck.setup()
 	construction_deck.shuffle()
 	
-	update_game_area()
+	update_game_area()	
 
 func draw_construction_card():
 	var card = construction_deck.draw_top()
@@ -237,15 +237,17 @@ func update_game_area():
 	SC.link(hbox,second_column)
 	SC.link(hbox,third_column)
 	SC.link(game_area_container,hbox)	
-	SC.link(companion_container,game_area_container)		
+	SC.link(companion_container,game_area_container)	
+	
+	# DEBUG - Jump right to the AI scoring
+	# _on_choose_offer(first_card, [second_card, third_card])
 
-
-func _on_choose_offer(pick, discards):
+func _on_choose_offer(pick, discards):	
 	ai_deck.put_on_top(pick)
 	discard_deck.put_on_top(discards.pop_back())
 	discard_deck.put_on_top(discards.pop_back())
 	update_game_area()
-	
+
 func show_player_temp():
 	SC.clean(companion_container)
 	player_temp_container = SC.Chrome.center_container()
@@ -260,7 +262,7 @@ func show_player_temp():
 		player_temp_button.rect_min_size = Vector2(200,100)
 		SC.link(grid,player_temp_button)
 	
-	var label = SC.Chrome.label("How many temp agencies were used by the player?")
+	var label = SC.Chrome.label("How many temp agency cards were used by the player?")
 	SC.link(box,label)	
 	SC.link(box,grid)
 	SC.link(player_temp_container,box)
@@ -273,15 +275,18 @@ func _on_player_temp_click(amount):
 func show_ai_score():
 	SC.clean(player_temp_container)	
 	scoring_container = SC.Chrome.center_container()
-	
-	var scored_cards_container = GridContainer.new()
-	scored_cards_container.set_columns(6)
 
+	var scored_cards_container = GridContainer.new()
+	scored_cards_container.set_columns(10)	
 	var scored_cards = ai_deck.get_all_cards()
-	# TODO Put inside a scroll container
 	for card in scored_cards:
+		# FIXME This is the only way I could get the textures to "scale" and stay within the bounds of the viewport
+		card.back_texture.expand = true
+		card.back_texture.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+		# 50% of base texture dimensions (210,320)
+		card.back_texture.rect_min_size = Vector2(105,160)
 		SC.link(scored_cards_container,card.back_texture)
-	
+		
 	var ai_score = AIScore.new()
 	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, player_temp_count)
 	ai_score.calculate()
@@ -294,10 +299,8 @@ func show_ai_score():
 	SC.link(hbox,vbox)
 	SC.link(vbox,solo_ai.texture)
 	SC.link(vbox,ai_score_label)
-	SC.link(hbox,vbox)
 	SC.link(hbox,scored_cards_container)
 	SC.link(scoring_container,hbox)
-
 	SC.link(container,scoring_container)
 
 

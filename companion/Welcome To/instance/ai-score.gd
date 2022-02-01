@@ -94,6 +94,8 @@ func calculate():
 
 	breakdown.total = breakdown.expansion + breakdown.parks + breakdown.fences + breakdown.pools + breakdown.temps
 	breakdown.total += breakdown.temp_bonus + breakdown.estates_bonus
+
+	breakdown.taken_cards = _deck.size()
 	
 	return breakdown
 
@@ -105,6 +107,7 @@ func format_breakdown():
 		if estate_index < breakdown.estates.size() - 1:
 			formatted_estates += ', '
 	var result = ""
+	result += 'Total Score: '+ str(breakdown.total) + '\n'
 	result += 'Expansion: ' + str(breakdown.expansion) + '\n'
 	result += 'Parks: ' + str(breakdown.parks) + '\n'
 	result += 'Pools: ' + str(breakdown.pools) + '\n'
@@ -121,5 +124,5 @@ func format_breakdown():
 			if estate_index < breakdown.top_five_estates.size() - 1:
 				formatted_top_five_estates += ', '
 		result += 'Scored Estates:\n  ' + formatted_top_five_estates + '\n'
-	result += 'Total: '+ str(breakdown.total)
+	result += 'Cards Taken: '+str(breakdown.taken_cards)
 	return result

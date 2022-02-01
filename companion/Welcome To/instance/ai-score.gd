@@ -9,7 +9,7 @@ var _player_temp_count
 
 var breakdown
 
-func init(ai, expansion, taken_plans, objectives, deck, player_temp_count):
+func _init(ai, expansion, taken_plans, objectives, deck, player_temp_count):
 	_ai = ai    
 	_expansion  = expansion
 	_taken_plans = taken_plans

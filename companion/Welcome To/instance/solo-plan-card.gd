@@ -6,7 +6,7 @@ var _texture_index
 var front_texture
 var back_texture
 
-func init(name, texture_index): 
+func _init(name, texture_index): 
     _name = name
     _texture_index = texture_index
 

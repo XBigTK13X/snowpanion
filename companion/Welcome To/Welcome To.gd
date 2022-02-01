@@ -1,11 +1,13 @@
 extends Node
 
 var ConstructionDeck = load('res://companion/Welcome To/instance/construction-deck.gd')
+var PlanDecks = load('res://companion/Welcome To/instance/plan-decks.gd')
 var AIScore = load('res://companion/Welcome To/instance/ai-score.gd')
 
 var container
 var ai_picker_container
 var expansion_picker_container
+var plan_picker_container
 var companion_container
 var game_area_container
 var player_temp_container
@@ -13,8 +15,10 @@ var player_temp_count_label
 var scoring_container
 
 
+var chosen_plans = []
 var selected_ai_name
 var selected_expansion_name
+var plan_decks
 var player_temp_count
 
 var construction_deck
@@ -24,49 +28,7 @@ var ai_completed_plans = []
 
 var turn_states = []
 
-# Points are top->bottom, left column->right column
-var solo_ais = {
-	cog_1 = {
-		goals = [false,false,true], points = [1,1,1,1,2,2], asset="front", atlas_index=2, nudge = Vector2(15,0)
-	},
-	cog_2 = {
-		goals = [true, true, true], points = [3,1,1,1,1,1], asset="back", atlas_index=2, nudge = Vector2(15,0)
-	},
-	cog_3 = {
-		goals = [false,true,false], points = [0,5,3,1,3,2], asset="front", atlas_index=1, nudge = Vector2(5,0)
-	},
-	cog_4 = {
-		goals = [true, false, true], points = [2,3,1,3,2,2], asset="back", atlas_index=1, nudge = Vector2(5,0)
-	},
-	cog_5 = {
-		goals = [true,true,false], points = [1,2,3,3,4,2], asset="front", atlas_index=0, nudge = Vector2(-10,0)
-	},
-	cog_6 = {
-		goals = [false,true,true], points = [4,3,2,2,1,4], asset="back", atlas_index=0, nudge = Vector2(0,5)
-	},
-	alan = {
-		goals = [true, true, true], points = [3,2,1,2,2,2], asset="back", atlas_index=3, nudge = Vector2(-10,10)
-	},
-	alex = {
-		goals = [false,false,false], points = [2,4,1,2,3,2], asset="front", atlas_index=3, nudge = Vector2(0,0)
-	},
-	ann = {
-		goals = [true,false,false], points = [3,5,3,1,4,2], asset="front", atlas_index=4, nudge = Vector2(10,0)
-	},
-	ben = {
-		goals = [true, true, true], points = [3,4,2,3,3,3], asset="back", atlas_index=4, nudge = Vector2(10,10)
-	},
-}
-
-var expansions = {
-	none = {display="None", bonus_points=0, supported=true},
-	halloween = {display="Halloween", bonus_points=15, supported=true},	
-	doomsday = {display="Nuclear Doomsday", bonus_points=0, supported=false},		
-	spring = {display="Spring / Easter", bonus_points=20, supported=true},
-	summer = {display="Summer Ice Cream", bonus_points=25, supported=true},
-	winter = {display="Winter Wonderland", bonus_points=25, supported=true},
-	outbreak = {display="Zombie Outbreak", bonus_points=0, supported=false}
-}
+var GameData = SC.Assets.game_data("Welcome To")
 
 func _ready():	
 	container = get_node("/root/Container")
@@ -82,9 +44,9 @@ func show_ai_picker():
 	var ai_grid = GridContainer.new()
 	ai_grid.set_columns(5)
 	
-	for solo_ai_name in solo_ais:
+	for solo_ai_name in GameData.solo_ais:
 		var atlas_texture = AtlasTexture.new()
-		var solo_ai = solo_ais[solo_ai_name]
+		var solo_ai = GameData.solo_ais[solo_ai_name]
 		var texture_column = (solo_ai.atlas_index % 3)
 		var texture_row = (solo_ai.atlas_index / 3)		
 		if solo_ai.asset == "front":
@@ -93,9 +55,9 @@ func show_ai_picker():
 			atlas_texture.set_atlas(back_texture)
 		atlas_texture.set_region(Rect2(15 + (texture_column * (210 + 10)) + solo_ai.nudge.x, 15 + (texture_row * (320 + 30)) + solo_ai.nudge.y, 210, 320))
 		atlas_texture.set_filter_clip(true)
-		solo_ais[solo_ai_name].texture = TextureRect.new()
-		solo_ais[solo_ai_name].texture.texture = atlas_texture
-		solo_ais[solo_ai_name].name = solo_ai_name
+		GameData.solo_ais[solo_ai_name].texture = TextureRect.new()
+		GameData.solo_ais[solo_ai_name].texture.texture = atlas_texture
+		GameData.solo_ais[solo_ai_name].name = solo_ai_name
 		var ai_button = SC.Chrome.highlight_on_hover_button(atlas_texture)
 		ai_button.connect("pressed", self, "_on_solo_ai_pressed", [solo_ai_name])
 		SC.link(ai_grid,ai_button)
@@ -114,8 +76,8 @@ func show_expansion_picker():
 	var expansion_grid = GridContainer.new()
 	expansion_grid.set_columns(3)	
 
-	for expansion_name in expansions:
-		var expansion = expansions[expansion_name]
+	for expansion_name in GameData.expansions:
+		var expansion = GameData.expansions[expansion_name]
 		if ! expansion.supported:
 			continue
 		var expansion_button = SC.Chrome.text_button(self, expansion.display, "_on_expansion_pressed", [expansion_name])
@@ -124,19 +86,40 @@ func show_expansion_picker():
 	SC.link(expansion_picker_container,expansion_grid)
 
 func _on_expansion_pressed(expansion_name):
+	SC.clean(expansion_picker_container)
 	selected_expansion_name = expansion_name	
-	show_companion()
+	plan_decks = PlanDecks.new()
+	show_plan_picker()
+
+func show_plan_picker(plan_index=0):
+	SC.clean(plan_picker_container)
+	plan_picker_container = SC.Chrome.center_container()
+
+	var grid_container = GridContainer.new()
+	grid_container.set_columns(8)
+
+	var plan_deck = plan_decks.get_deck(plan_index)
+	for card in plan_deck.get_all_cards():
+		var card_button = SC.Chrome.highlight_on_hover_button(card.front_texture.texture)
+		card_button.connect("pressed", self, "_on_plan_chosen", [card.get_plan()])
+		SC.link(grid_container, card_button)
+	
+	SC.link(plan_picker_container, grid_container)
+	SC.link(container, plan_picker_container)
+
+func _on_plan_chosen(plan):
+	chosen_plans.push_back(plan)
+	if(plan.tier < 3):
+		show_plan_picker(plan.tier)
+	else:
+		show_companion()
 
 func show_companion():
-	SC.clean(expansion_picker_container)
+	SC.clean(plan_picker_container)
 	companion_container = Container.new()	
 	SC.link(container,companion_container)	
-	
-	show_city_plans()
+
 	show_construction_cards()
-	
-func show_city_plans():
-	pass
 	
 func show_construction_cards():
 	construction_deck = ConstructionDeck.new()
@@ -160,11 +143,10 @@ func draw_construction_card():
 	return card
 
 func update_game_area():
-	var solo_ai = solo_ais[selected_ai_name]	
-	if game_area_container != null:
-		SC.clean(game_area_container)	
+	var solo_ai = GameData.solo_ais[selected_ai_name]	
+	SC.clean(game_area_container)
 		
-	var expansion = expansions[selected_expansion_name]
+	var expansion = GameData.expansions[selected_expansion_name]
 	var expansion_label = SC.Chrome.label("Expansion: " + expansion.display)
 	var pick_label = SC.Chrome.label("Select a card to give to the AI")	
 	var count_label = construction_deck.count_label()		
@@ -292,12 +274,11 @@ func show_ai_score():
 		card.back_texture.rect_min_size = Vector2(105,160)
 		SC.link(scored_cards_container,card.back_texture)
 		
-	var ai_score = AIScore.new()
-	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], ai_completed_plans, [], scored_cards, player_temp_count)
+	var ai_score = AIScore.new(GameData.solo_ais[selected_ai_name], GameData.expansions[selected_expansion_name], ai_completed_plans, [], scored_cards, player_temp_count)
 	ai_score.calculate()
 	var ai_score_label = SC.Chrome.label(ai_score.format_breakdown())
 
-	var solo_ai = solo_ais[selected_ai_name]
+	var solo_ai = GameData.solo_ais[selected_ai_name]
 
 	var claimed_plans_container = HBoxContainer.new()
 	for plan in ai_completed_plans:

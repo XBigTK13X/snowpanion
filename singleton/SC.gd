@@ -7,6 +7,10 @@ var RNG
 var Settings
 
 func clean(node):
+	if(node == null):
+		return
+	if(node.get_parent() == null):
+		return
 	node.get_parent().remove_child(node)
 	for n in node.get_children():
 		node.remove_child(n)

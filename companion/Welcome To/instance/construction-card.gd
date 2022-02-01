@@ -7,7 +7,7 @@ var _texture_index
 var front_texture
 var back_texture
 
-func init(kind, number, texture_index):    
+func _init(kind, number, texture_index):    
     _kind = kind
     _number = number
     _texture_index = texture_index

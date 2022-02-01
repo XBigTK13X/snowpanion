@@ -162,13 +162,7 @@ func draw_construction_card():
 func update_game_area():
 	var solo_ai = solo_ais[selected_ai_name]	
 	if game_area_container != null:
-		SC.clean(game_area_container)
-		
-	game_area_container = SC.Chrome.center_container()
-	var hbox = HBoxContainer.new()
-	var first_column = VBoxContainer.new()
-	var second_column = VBoxContainer.new()
-	var third_column = VBoxContainer.new()
+		SC.clean(game_area_container)	
 		
 	var expansion = expansions[selected_expansion_name]
 	var expansion_label = SC.Chrome.label("Expansion: " + expansion.display)
@@ -185,7 +179,6 @@ func update_game_area():
 	var first_card = draw_construction_card()
 	var second_card = draw_construction_card()
 	var third_card = draw_construction_card()
-	
 	
 	if ai_completed_plans.size() >= 3:
 		show_player_temp()
@@ -217,27 +210,39 @@ func update_game_area():
 		construction_deck.shuffle()
 		top_card = construction_deck.top_card()	
 	
-	var top_ai_card = ai_deck.top_card()	
-	
-	SC.link(first_column,top_card.back_texture)
-	SC.link(first_column,count_label)
-	SC.link(second_column,pick_label)
-	SC.link(second_column,choices_container)		
-	SC.link(third_column,expansion_label)
-	SC.link(third_column,solo_ai.texture)		
+	var top_ai_card = ai_deck.top_card()
+
+	var claimed_plans_container = VBoxContainer.new()
+	for plan in ai_completed_plans:
+		SC.link(claimed_plans_container, plan.front_texture)
+
+	game_area_container = SC.Chrome.center_container()
+	var hbox = HBoxContainer.new()
+	hbox.set("custom_constants/separation", 100)
+	var first_column = VBoxContainer.new()
+	var second_column = VBoxContainer.new()
+	var third_column = VBoxContainer.new()
+	var fourth_column = VBoxContainer.new()
+
+	SC.link(first_column, count_label)
+	SC.link(first_column, top_card.back_texture)
+	SC.link(second_column, pick_label)
+	SC.link(second_column, choices_container)		
+	SC.link(third_column, expansion_label)
+	SC.link(third_column, solo_ai.texture)
+	SC.link(fourth_column, claimed_plans_container)
 
 	if top_ai_card != null:
 		SC.link(third_column,top_ai_card.back_texture)
 
 	SC.link(third_column,ai_count_label)
 
-	hbox.set("custom_constants/separation", 100)
-
-	SC.link(hbox,first_column)
-	SC.link(hbox,second_column)
-	SC.link(hbox,third_column)
-	SC.link(game_area_container,hbox)	
-	SC.link(companion_container,game_area_container)	
+	SC.link(hbox, first_column)
+	SC.link(hbox, second_column)
+	SC.link(hbox, third_column)
+	SC.link(hbox, fourth_column)
+	SC.link(game_area_container, hbox)	
+	SC.link(companion_container, game_area_container)	
 	
 	# DEBUG - Jump right to the AI scoring
 	# _on_choose_offer(first_card, [second_card, third_card])
@@ -288,19 +293,28 @@ func show_ai_score():
 		SC.link(scored_cards_container,card.back_texture)
 		
 	var ai_score = AIScore.new()
-	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], [], scored_cards, player_temp_count)
+	ai_score.init(solo_ais[selected_ai_name], expansions[selected_expansion_name], ai_completed_plans, [], scored_cards, player_temp_count)
 	ai_score.calculate()
 	var ai_score_label = SC.Chrome.label(ai_score.format_breakdown())
 
 	var solo_ai = solo_ais[selected_ai_name]
 
+	var claimed_plans_container = HBoxContainer.new()
+	for plan in ai_completed_plans:
+		SC.link(claimed_plans_container, plan.front_texture)
+
 	var hbox = HBoxContainer.new()
-	var vbox = VBoxContainer.new()
-	SC.link(hbox,vbox)
-	SC.link(vbox,solo_ai.texture)
-	SC.link(vbox,ai_score_label)
-	SC.link(hbox,scored_cards_container)
-	SC.link(scoring_container,hbox)
+	hbox.set("custom_constants/separation", 100)
+	var first_column = VBoxContainer.new()
+	var second_column = VBoxContainer.new()
+	second_column.set("custom_constants/separation", 100)
+	SC.link(hbox,first_column)
+	SC.link(hbox,second_column)
+	SC.link(first_column,solo_ai.texture)
+	SC.link(first_column,ai_score_label)
+	SC.link(second_column, scored_cards_container)
+	SC.link(second_column, claimed_plans_container)
+	SC.link(scoring_container, hbox)
 	SC.link(container,scoring_container)
 
 

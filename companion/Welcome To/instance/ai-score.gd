@@ -3,14 +3,16 @@ extends Node
 var _ai
 var _deck
 var _expansion
+var _taken_plans
 var _objectives
 var _player_temp_count
 
 var breakdown
 
-func init(ai, expansion, objectives, deck, player_temp_count):
+func init(ai, expansion, taken_plans, objectives, deck, player_temp_count):
 	_ai = ai    
 	_expansion  = expansion
+	_taken_plans = taken_plans
 	_objectives = objectives
 	_deck = deck
 	_player_temp_count = player_temp_count
@@ -33,7 +35,8 @@ func calculate():
 		fences = 0,
 		pools = 0,
 		temps = 0,
-		top_five_estates = null
+		top_five_estates = null,
+		temp_count = 0
 	} 
 	var park_weight = _ai.points[0]
 	var pool_weight = _ai.points[1]
@@ -41,8 +44,6 @@ func calculate():
 	var fence_weight = _ai.points[3]
 	var bis_weight = _ai.points[4]
 	var estate_weight = _ai.points[5]
-
-	var temp_count = 0
 
 	var estate_scores = []
 
@@ -60,7 +61,7 @@ func calculate():
 			breakdown.pools += pool_weight
 		elif card._kind == 'temp':
 			breakdown.temps += temp_weight
-			temp_count += 1
+			breakdown.temp_count += 1
 		elif card._kind == 'park':
 			breakdown.parks += park_weight
 		elif card._kind == 'estate':
@@ -69,9 +70,9 @@ func calculate():
 	# Score the final estate
 	estate_scores.push_back(score_estate(estate, bis_weight, estate_weight))
 
-	if temp_count == 0:
+	if breakdown.temp_count == 0:
 		breakdown.temp_bonus = 0
-	elif temp_count >= _player_temp_count:
+	elif breakdown.temp_count >= _player_temp_count:
 		breakdown.temp_bonus = 7
 	else:
 		breakdown.temp_bonus = 4
@@ -108,11 +109,12 @@ func format_breakdown():
 			formatted_estates += ', '
 	var result = ""
 	result += 'Total Score: '+ str(breakdown.total) + '\n'
-	result += 'Expansion: ' + str(breakdown.expansion) + '\n'
-	result += 'Parks: ' + str(breakdown.parks) + '\n'
-	result += 'Pools: ' + str(breakdown.pools) + '\n'
-	result += 'Fences: ' + str(breakdown.fences) + '\n'
-	result += 'Temps: ' + str(breakdown.temps) + '\n'	
+	result += 'Expansion Points: ' + str(breakdown.expansion) + '\n'
+	result += 'Park Points: ' + str(breakdown.parks) + '\n'
+	result += 'Pool Points: ' + str(breakdown.pools) + '\n'
+	result += 'Fence Points: ' + str(breakdown.fences) + '\n'
+	result += 'Temp Points: ' + str(breakdown.temps) + '\n'	
+	result += 'Temps: ' + str(breakdown.temp_count) + '\n'
 	result += 'Player Temps: ' + str(_player_temp_count) + '\n'
 	result += 'Temp Bonus: ' + str(breakdown.temp_bonus) + '\n'
 	result += 'Estates:\n  ' + formatted_estates + '\n'

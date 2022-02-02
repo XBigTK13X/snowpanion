@@ -10,12 +10,13 @@ var expansion_picker_container
 var plan_picker_container
 var companion_container
 var game_area_container
+var chosen_plans_container
 var player_temp_container
 var player_temp_count_label
 var scoring_container
 
 
-var chosen_plans = []
+var chosen_plan_cards = []
 var selected_ai_name
 var selected_expansion_name
 var plan_decks
@@ -101,16 +102,16 @@ func show_plan_picker(plan_index=0):
 	var plan_deck = plan_decks.get_deck(plan_index)
 	for card in plan_deck.get_all_cards():
 		var card_button = SC.Chrome.highlight_on_hover_button(card.front_texture.texture)
-		card_button.connect("pressed", self, "_on_plan_chosen", [card.get_plan()])
+		card_button.connect("pressed", self, "_on_plan_chosen", [card])
 		SC.link(grid_container, card_button)
 	
 	SC.link(plan_picker_container, grid_container)
 	SC.link(container, plan_picker_container)
 
-func _on_plan_chosen(plan):
-	chosen_plans.push_back(plan)
-	if(plan.tier < 3):
-		show_plan_picker(plan.tier)
+func _on_plan_chosen(plan_card):
+	chosen_plan_cards.push_back(plan_card)
+	if(plan_card.get_plan().tier < 3):
+		show_plan_picker(plan_card.get_plan().tier)
 	else:
 		show_companion()
 
@@ -138,7 +139,8 @@ func draw_construction_card():
 		construction_deck.shuffle()
 		card = construction_deck.draw_top()
 	if card.is_plan():		
-		ai_completed_plans.push_back(card)
+		var plan_card = chosen_plan_cards[card.get_tier()]
+		ai_completed_plans.push_back({card=card, max_score=plan_card.get_score(), plan_card=plan_card})		
 		return draw_construction_card()
 	return card
 
@@ -196,15 +198,19 @@ func update_game_area():
 
 	var claimed_plans_container = VBoxContainer.new()
 	for plan in ai_completed_plans:
-		SC.link(claimed_plans_container, plan.front_texture)
+		SC.link(claimed_plans_container, plan.card.front_texture)
+
+	update_chosen_plans()
 
 	game_area_container = SC.Chrome.center_container()
-	var hbox = HBoxContainer.new()
-	hbox.set("custom_constants/separation", 100)
+	var first_row = HBoxContainer.new()
+	first_row.set("custom_constants/separation", 100)
 	var first_column = VBoxContainer.new()
 	var second_column = VBoxContainer.new()
 	var third_column = VBoxContainer.new()
 	var fourth_column = VBoxContainer.new()
+	var second_row = HBoxContainer.new()
+	second_row.set("custom_constants/separation", 100)
 
 	SC.link(first_column, count_label)
 	SC.link(first_column, top_card.back_texture)
@@ -213,26 +219,51 @@ func update_game_area():
 	SC.link(third_column, expansion_label)
 	SC.link(third_column, solo_ai.texture)
 	SC.link(fourth_column, claimed_plans_container)
+	SC.link(second_row, chosen_plans_container)
 
 	if top_ai_card != null:
 		SC.link(third_column,top_ai_card.back_texture)
 
 	SC.link(third_column,ai_count_label)
 
-	SC.link(hbox, first_column)
-	SC.link(hbox, second_column)
-	SC.link(hbox, third_column)
-	SC.link(hbox, fourth_column)
-	SC.link(game_area_container, hbox)	
+	var rows_container = VBoxContainer.new()
+	SC.link(first_row, first_column)
+	SC.link(first_row, second_column)
+	SC.link(first_row, third_column)
+	SC.link(first_row, fourth_column)
+	SC.link(rows_container, first_row)	
+	SC.link(rows_container, second_row)	
+	SC.link(game_area_container, rows_container)
 	SC.link(companion_container, game_area_container)	
 	
-	# DEBUG - Jump right to the AI scoring
-	# _on_choose_offer(first_card, [second_card, third_card])
+	if(GameData.debug_ai_scoring):
+		_on_choose_offer(first_card, [second_card, third_card])
+
+func update_chosen_plans():
+	if(chosen_plans_container == null):
+		chosen_plans_container = HBoxContainer.new()
+		chosen_plans_container.set("custom_constants/separation", 100)
+	else:
+		SC.remove_children(chosen_plans_container)
+	for plan in chosen_plan_cards:
+		var button_texture = plan.front_texture.texture
+		if plan.is_completed():
+			button_texture = plan.back_texture.texture
+		var plan_button = SC.Chrome.highlight_on_hover_button(button_texture)
+		plan_button.connect("pressed", self, "_on_plan_pressed", [plan])
+		chosen_plans_container.add_child(plan_button)
+
+func _on_plan_pressed(plan_card):
+	plan_card.toggle()
+	update_chosen_plans()
 
 func _on_choose_offer(pick, discards):	
 	ai_deck.put_on_top(pick)
 	discard_deck.put_on_top(discards.pop_back())
 	discard_deck.put_on_top(discards.pop_back())
+	for plan in ai_completed_plans:
+		if(!plan.plan_card.is_completed()):
+			plan.plan_card.toggle()
 	update_game_area()
 
 func show_player_temp():
@@ -274,7 +305,7 @@ func show_ai_score():
 		card.back_texture.rect_min_size = Vector2(105,160)
 		SC.link(scored_cards_container,card.back_texture)
 		
-	var ai_score = AIScore.new(GameData.solo_ais[selected_ai_name], GameData.expansions[selected_expansion_name], ai_completed_plans, [], scored_cards, player_temp_count)
+	var ai_score = AIScore.new(GameData.solo_ais[selected_ai_name], GameData.expansions[selected_expansion_name], ai_completed_plans, scored_cards, player_temp_count)
 	ai_score.calculate()
 	var ai_score_label = SC.Chrome.label(ai_score.format_breakdown())
 
@@ -282,7 +313,14 @@ func show_ai_score():
 
 	var claimed_plans_container = HBoxContainer.new()
 	for plan in ai_completed_plans:
-		SC.link(claimed_plans_container, plan.front_texture)
+		plan.card.front_texture.expand = true
+		plan.card.front_texture.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+		plan.card.front_texture.rect_min_size = Vector2(105,160)
+		plan.plan_card.front_texture.expand = true
+		plan.plan_card.front_texture.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+		plan.plan_card.front_texture.rect_min_size = Vector2(105,160)
+		SC.link(claimed_plans_container, plan.card.front_texture)
+		SC.link(claimed_plans_container, plan.plan_card.front_texture)
 
 	var hbox = HBoxContainer.new()
 	hbox.set("custom_constants/separation", 100)

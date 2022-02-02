@@ -7,7 +7,6 @@ var SoloPlanCard = load('res://companion/Welcome To/instance/solo-plan-card.gd')
 
 var GameData = SC.Assets.game_data("Welcome To")
 
-var objective_cards = ['n1','n2','n3']
 var deck_cards = []
 
 func setup():
@@ -15,13 +14,13 @@ func setup():
 		for number_index in GameData.constructions[kind].size():
 			var card = ConstructionCard.new(kind, GameData.constructions[kind][number_index], number_index)
 			deck_cards.push_back(card)
-	var n1_solo_plan = SoloPlanCard.new("n1", 5) 
+	var n1_solo_plan = SoloPlanCard.new("n1", 0, 5) 
 	var n1_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
 	deck_cards.insert(n1_insert_index, n1_solo_plan)
-	var n2_solo_plan = SoloPlanCard.new("n2", 8) 
+	var n2_solo_plan = SoloPlanCard.new("n2", 1, 8) 
 	var n2_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
 	deck_cards.insert(n2_insert_index, n2_solo_plan)
-	var n3_solo_plan = SoloPlanCard.new("n3", 7) 
+	var n3_solo_plan = SoloPlanCard.new("n3", 2, 7) 
 	var n3_insert_index = SC.RNG.integer(ceil(deck_cards.size()/2),deck_cards.size() - 1)
 	deck_cards.insert(n3_insert_index, n3_solo_plan)
 	#_update_deck_count()

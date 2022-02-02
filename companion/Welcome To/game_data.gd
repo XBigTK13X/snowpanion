@@ -1,4 +1,7 @@
 extends Node
+
+var debug_ai_scoring = false
+
 # Points are top->bottom, left column->right column
 var solo_ais = {
 	cog_1 = {

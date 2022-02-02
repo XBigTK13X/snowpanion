@@ -1,6 +1,7 @@
 extends Node
 
 var _plan
+var _completed = false
 
 var front_texture
 var back_texture
@@ -23,5 +24,16 @@ func get_texture(expansion, kind, index):
     texture.texture = atlas_texture
     return texture
 
+func toggle():
+    _completed = !_completed
+
+func is_completed():
+    return _completed
+
 func get_plan():
     return _plan
+
+func get_score():
+    if(_completed):
+        return _plan.min
+    return _plan.max

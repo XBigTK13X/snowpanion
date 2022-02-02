@@ -16,6 +16,10 @@ func clean(node):
 		node.remove_child(n)
 	node.queue_free()
 
+func remove_children(node):
+	for n in node.get_children():
+		node.remove_child(n)
+
 func link(parent, child):
 	var current_parent = child.get_parent()
 	if(current_parent != null):

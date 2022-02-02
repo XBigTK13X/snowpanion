@@ -9,11 +9,10 @@ var _player_temp_count
 
 var breakdown
 
-func _init(ai, expansion, taken_plans, objectives, deck, player_temp_count):
+func _init(ai, expansion, taken_plans, deck, player_temp_count):
 	_ai = ai    
 	_expansion  = expansion
 	_taken_plans = taken_plans
-	_objectives = objectives
 	_deck = deck
 	_player_temp_count = player_temp_count
 
@@ -93,8 +92,20 @@ func calculate():
 			breakdown.estates_bonus += sorted_estate_scores[sorted_estate_scores.size() - ii - 1]
 			breakdown.top_five_estates.push_back(sorted_estate_scores[sorted_estate_scores.size() - ii - 1])
 
+	breakdown.plan_scores = []
+	breakdown.plan_bonus = 0
+
+	for plan_index in range(0,_taken_plans.size()):		
+		var count_plan_score = _ai.goals[plan_index]
+		if(count_plan_score):
+			var plan = _taken_plans[plan_index]
+			breakdown.plan_scores.push_back(plan.max_score)
+			breakdown.plan_bonus += plan.max_score
+		else:
+			breakdown.plan_scores.push_back(0)
+
 	breakdown.total = breakdown.expansion + breakdown.parks + breakdown.fences + breakdown.pools + breakdown.temps
-	breakdown.total += breakdown.temp_bonus + breakdown.estates_bonus
+	breakdown.total += breakdown.temp_bonus + breakdown.estates_bonus + breakdown.plan_bonus
 
 	breakdown.taken_cards = _deck.size()
 	
@@ -107,6 +118,13 @@ func format_breakdown():
 		formatted_estates += str(estate)
 		if estate_index < breakdown.estates.size() - 1:
 			formatted_estates += ', '
+
+	var formatted_plan_scores = ''
+	for plan_index in breakdown.plan_scores.size():
+		var plan = breakdown.plan_scores[plan_index]
+		formatted_plan_scores += str(plan)
+		if plan_index < breakdown.plan_scores.size() - 1:
+			formatted_plan_scores += ', '
 	var result = ""
 	result += 'Total Score: '+ str(breakdown.total) + '\n'
 	result += 'Expansion Points: ' + str(breakdown.expansion) + '\n'
@@ -117,6 +135,7 @@ func format_breakdown():
 	result += 'Temps: ' + str(breakdown.temp_count) + '\n'
 	result += 'Player Temps: ' + str(_player_temp_count) + '\n'
 	result += 'Temp Bonus: ' + str(breakdown.temp_bonus) + '\n'
+	result += 'Plans:\n  '+ formatted_plan_scores + '\n'
 	result += 'Estates:\n  ' + formatted_estates + '\n'
 	if(breakdown.top_five_estates != null):
 		var formatted_top_five_estates = ''

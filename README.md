@@ -1,6 +1,8 @@
-# Snowpanion
+# Snowpanion (Snowman's Board Game Companion)
 
 Run board game automa without the fiddly bits.
+
+[Try it in your web browser!](https://xbigtk13x.github.io/snowpanion/)
 
 ## Disclaimer
 

@@ -20,6 +20,7 @@ var chosen_plan_cards = []
 var selected_ai_name
 var selected_expansion_name
 var plan_decks
+var first_plan_validated = false
 var player_temp_count
 
 var construction_deck
@@ -42,8 +43,7 @@ func show_ai_picker():
 	ai_picker_container = SC.Chrome.center_container()
 	SC.link(container,ai_picker_container)
 
-	var ai_grid = GridContainer.new()
-	ai_grid.set_columns(5)
+	var ai_grid = SC.Chrome.margin_grid_container(5)
 	
 	for solo_ai_name in GameData.solo_ais:
 		var atlas_texture = AtlasTexture.new()
@@ -74,8 +74,7 @@ func show_expansion_picker():
 	expansion_picker_container = SC.Chrome.center_container()
 	SC.link(container,expansion_picker_container)
 
-	var expansion_grid = GridContainer.new()
-	expansion_grid.set_columns(3)	
+	var expansion_grid = SC.Chrome.margin_grid_container(3)
 
 	for expansion_name in GameData.expansions:
 		var expansion = GameData.expansions[expansion_name]
@@ -96,8 +95,7 @@ func show_plan_picker(plan_index=0):
 	SC.clean(plan_picker_container)
 	plan_picker_container = SC.Chrome.center_container()
 
-	var grid_container = GridContainer.new()
-	grid_container.set_columns(8)
+	var grid_container = SC.Chrome.margin_grid_container(6)
 
 	var plan_deck = plan_decks.get_deck(plan_index)
 	for card in plan_deck.get_all_cards():
@@ -127,7 +125,6 @@ func show_construction_cards():
 	ai_deck = ConstructionDeck.new()
 	discard_deck = ConstructionDeck.new()
 	construction_deck.setup()
-	construction_deck.shuffle()
 	
 	update_game_area()	
 
@@ -152,19 +149,22 @@ func update_game_area():
 	var expansion_label = SC.Chrome.label("Expansion: " + expansion.display)
 	var pick_label = SC.Chrome.label("Select a card to give to the AI")	
 	var count_label = construction_deck.count_label()		
+	var discard_label = discard_deck.count_label()
 	var ai_count_label = ai_deck.count_label()	
+
+	if(!first_plan_validated and ai_completed_plans.size() > 0):
+		return handle_first_plan_validation()
 
 	if construction_deck.size() + discard_deck.size() < 3:
 		return end_game()
-		
-	var choices_container = GridContainer.new()
-	choices_container.set_columns(3)
+
+	if ai_completed_plans.size() >= 3:
+		return end_game()
+
+	var choices_container = SC.Chrome.margin_grid_container(3)
 	var first_card = draw_construction_card()
 	var second_card = draw_construction_card()
 	var third_card = draw_construction_card()
-	
-	if ai_completed_plans.size() >= 3:
-		return end_game()
 		
 	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
 	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
@@ -221,8 +221,13 @@ func update_game_area():
 	fourth_column.set_alignment(BoxContainer.ALIGN_CENTER)
 	fourth_column.set("custom_constants/separation", 50)
 
+	count_label.text = count_label.text + ' in Deck'
+	discard_label.text = discard_label.text + ' Discarded'
+	
+
 	SC.link(first_column, count_label)
 	SC.link(first_column, top_card.back_texture)
+	SC.link(first_column, discard_label)
 	SC.link(first_column, end_game_button)
 	SC.link(second_column, pick_label)
 	SC.link(second_column, choices_container)		
@@ -233,8 +238,8 @@ func update_game_area():
 
 	if top_ai_card != null:
 		SC.link(third_column,top_ai_card.back_texture)
-
-	SC.link(third_column,ai_count_label)
+		ai_count_label.text = ai_count_label.text + ' Taken'
+		SC.link(third_column,ai_count_label)
 
 	SC.link(first_row, first_column)
 	SC.link(first_row, second_column)
@@ -265,6 +270,7 @@ func end_game():
 func update_chosen_plans():
 	if(chosen_plans_container == null):
 		chosen_plans_container = HBoxContainer.new()
+		chosen_plans_container.set("custom_constants/separation", 20)
 	else:
 		SC.remove_children(chosen_plans_container)
 	var all_plans_completed = true
@@ -280,8 +286,17 @@ func update_chosen_plans():
 	if(all_plans_completed):
 		end_game()
 
+func handle_first_plan_validation():
+	if(!first_plan_validated):
+		construction_deck.add_all(discard_deck)
+		discard_deck.clear()
+		construction_deck.shuffle()		
+		first_plan_validated = true
+		update_game_area()
+
 func _on_plan_pressed(plan_card):
 	plan_card.toggle()
+	handle_first_plan_validation()
 	update_chosen_plans()
 
 func _on_choose_offer(pick, discards):	

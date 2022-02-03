@@ -70,3 +70,10 @@ func label(text):
 	label.set('custom_fonts/font', SC.Assets.get_font('Text Label'))
 	label.text = text
 	return label
+
+func margin_grid_container(columns, margin=20):
+	var container = GridContainer.new()
+	container.add_constant_override("hseparation", margin)
+	container.add_constant_override("vseparation", margin)
+	container.set_columns(columns)
+	return container

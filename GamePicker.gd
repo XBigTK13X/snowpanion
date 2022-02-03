@@ -20,6 +20,7 @@ func _ready():
 	var fullscreen_button = SC.Chrome.text_button(self, "Fullscreen", "_on_fullscreen_pressed", [])
 		
 	var vbox = VBoxContainer.new()
+	vbox.set("custom_constants/separation", 100)
 	SC.link(vbox, game_grid)
 	SC.link(vbox, fullscreen_button)
 	SC.link(game_picker_container,vbox)

@@ -18,8 +18,12 @@ func _init(name, tier, texture_index):
 	atlas_texture.set_atlas(cards_texture)
 	var texture_column = (texture_index % 3)
 	var texture_row = (texture_index / 3)    
-	atlas_texture.set_region(Rect2(15 + (texture_column * (210 + 10)), 15 + (texture_row * (320 + 30)) , 210, 320))
+	var card_width = 230.66
+	var card_height = 348.66
+	var clip_margin = Vector2(10,10)
+	atlas_texture.set_region(Rect2((texture_column * card_width) + clip_margin.x,(texture_row * card_height) + clip_margin.y, card_width - (clip_margin.x * 2), card_height - (clip_margin.y * 2)))
 	atlas_texture.set_filter_clip(true)
+
 	
 	front_texture = TextureRect.new()
 	front_texture.texture = atlas_texture

@@ -4,36 +4,16 @@ var debug_ai_scoring = false
 
 # Points are top->bottom, left column->right column
 var solo_ais = {
-	cog_1 = {
-		goals = [false,false,true], points = [1,1,1,1,2,2], asset="front", atlas_index=2, nudge = Vector2(15,0)
-	},
-	cog_2 = {
-		goals = [true, true, true], points = [3,1,1,1,1,1], asset="back", atlas_index=2, nudge = Vector2(15,0)
-	},
-	cog_3 = {
-		goals = [false,true,false], points = [0,5,3,1,3,2], asset="front", atlas_index=1, nudge = Vector2(5,0)
-	},
-	cog_4 = {
-		goals = [true, false, true], points = [2,3,1,3,2,2], asset="back", atlas_index=1, nudge = Vector2(5,0)
-	},
-	cog_5 = {
-		goals = [true,true,false], points = [1,2,3,3,4,2], asset="front", atlas_index=0, nudge = Vector2(-10,0)
-	},
-	cog_6 = {
-		goals = [false,true,true], points = [4,3,2,2,1,4], asset="back", atlas_index=0, nudge = Vector2(0,5)
-	},
-	alan = {
-		goals = [true, true, true], points = [3,2,1,2,2,2], asset="back", atlas_index=3, nudge = Vector2(-10,10)
-	},
-	alex = {
-		goals = [false,false,false], points = [2,4,1,2,3,2], asset="front", atlas_index=3, nudge = Vector2(0,0)
-	},
-	ann = {
-		goals = [true,false,false], points = [3,5,3,1,4,2], asset="front", atlas_index=4, nudge = Vector2(10,0)
-	},
-	ben = {
-		goals = [true, true, true], points = [3,4,2,3,3,3], asset="back", atlas_index=4, nudge = Vector2(10,10)
-	},
+	cog_1 = {goals = [false,false,true], points = [1,1,1,1,2,2], asset="front", atlas_index=2, nudge = Vector2(15,0)},
+	cog_2 = {goals = [true, true, true], points = [3,1,1,1,1,1], asset="back", atlas_index=2, nudge = Vector2(15,0)},
+	cog_3 = {goals = [false,true,false], points = [0,5,3,1,3,2], asset="front", atlas_index=1, nudge = Vector2(5,0)},
+	cog_4 = {goals = [true, false, true], points = [2,3,1,3,2,2], asset="back", atlas_index=1, nudge = Vector2(5,0)},
+	cog_5 = {goals = [true,true,false], points = [1,2,3,3,4,2], asset="front", atlas_index=0, nudge = Vector2(-10,0)},
+	cog_6 = {goals = [false,true,true], points = [4,3,2,2,1,4], asset="back", atlas_index=0, nudge = Vector2(0,5)},
+	alan = {goals = [true, true, true], points = [3,2,1,2,2,2], asset="back", atlas_index=3, nudge = Vector2(-10,10)},
+	alex = {goals = [false,false,false], points = [2,4,1,2,3,2], asset="front", atlas_index=3, nudge = Vector2(0,0)},
+	ann = {goals = [true,false,false], points = [3,5,3,1,4,2], asset="front", atlas_index=4, nudge = Vector2(10,0)},
+	ben = {goals = [true, true, true], points = [3,4,2,3,3,3], asset="back", atlas_index=4, nudge = Vector2(10,10)},
 }
 
 var expansions = {
@@ -48,35 +28,36 @@ var expansions = {
 
 var plans = {
 	base = [
-		{tier=1, max=8, min=4, atlas_index=0},
-		{tier=1, max=8, min=4, atlas_index=1},
-		{tier=1, max=8, min=4, atlas_index=2},
-		{tier=1, max=6, min=3, atlas_index=3},
-		{tier=1, max=8, min=4, atlas_index=4},
-		{tier=1, max=10, min=6, atlas_index=5},
-		{tier=2, max=11, min=6, atlas_index=6},
-		{tier=2, max=8, min=4, atlas_index=7},
-		{tier=2, max=10, min=6, atlas_index=8},
-		{tier=2, max=12, min=7, atlas_index=9},
-		{tier=2, max=9, min=5, atlas_index=10},
-		{tier=2, max=9, min=5, atlas_index=11},
-		{tier=3, max=12, min=7, atlas_index=12},
-		{tier=3, max=13, min=7, atlas_index=13},
-		{tier=3, max=7, min=3, atlas_index=14},
-		{tier=3, max=7, min=3, atlas_index=15},
-		{tier=3, max=11, min=6, atlas_index=16},
-		{tier=3, max=13, min=7, atlas_index=17},
-		# {tier=1, max=8, min=4, atlas_index=18}, -- Solo AI Card
-		{tier=2, max=7, min=4, atlas_index=19, advanced = true},
-		{tier=2, max=8, min=3, atlas_index=20, advanced = true},
-		{tier=1, max=7, min=4, atlas_index=21, advanced = true},
-		{tier=2, max=10, min=5, atlas_index=22, advanced = true},
-		{tier=1, max=6, min=3, atlas_index=23, advanced = true},
-		{tier=2, max=7, min=4, atlas_index=24, advanced = true},
-		{tier=1, max=8, min=3, atlas_index=25, advanced = true},
-		{tier=1, max=6, min=3, atlas_index=26, advanced = true},
-		{tier=2, max=10, min=5, atlas_index=27, advanced = true},
-		{tier=1, max=8, min=4, atlas_index=28, advanced = true},
+		{tier=1, max=8, min=4, atlas_index=0, nudge=Vector2(0,0)},
+		{tier=1, max=8, min=4, atlas_index=1, nudge=Vector2(0,0)},
+		{tier=1, max=8, min=4, atlas_index=2, nudge=Vector2(0,0)},
+		{tier=1, max=6, min=3, atlas_index=3, nudge=Vector2(0,0)},
+		{tier=1, max=8, min=4, atlas_index=4, nudge=Vector2(0,0)},
+		{tier=1, max=10, min=6, atlas_index=5, nudge=Vector2(0,0)},
+		{tier=2, max=11, min=6, atlas_index=6, nudge=Vector2(0,0)},
+		{tier=2, max=8, min=4, atlas_index=7, nudge=Vector2(0,0)},
+		{tier=2, max=10, min=6, atlas_index=8, nudge=Vector2(0,0)},
+		{tier=2, max=12, min=7, atlas_index=9, nudge=Vector2(0,0)},
+		{tier=2, max=9, min=5, atlas_index=10, nudge=Vector2(0,0)},
+		{tier=2, max=9, min=5, atlas_index=11, nudge=Vector2(0,0)},
+		{tier=3, max=12, min=7, atlas_index=12, nudge=Vector2(0,0)},
+		{tier=3, max=13, min=7, atlas_index=13, nudge=Vector2(0,0)},
+		{tier=3, max=7, min=3, atlas_index=14, nudge=Vector2(0,0)},
+		{tier=3, max=7, min=3, atlas_index=15, nudge=Vector2(0,0)},
+		{tier=3, max=11, min=6, atlas_index=16, nudge=Vector2(0,0)},
+		{tier=3, max=13, min=7, atlas_index=17, nudge=Vector2(0,0)},
+		#Solo AI Card
+		{tier=0, max=0, min=0, atlas_index=18}, 
+		{tier=2, max=7, min=4, atlas_index=19, advanced = true, nudge=Vector2(0,0)},
+		{tier=2, max=8, min=3, atlas_index=20, advanced = true, nudge=Vector2(0,0)},
+		{tier=1, max=7, min=4, atlas_index=21, advanced = true, nudge=Vector2(0,0)},
+		{tier=2, max=10, min=5, atlas_index=22, advanced = true, nudge=Vector2(0,0)},
+		{tier=1, max=6, min=3, atlas_index=23, advanced = true, nudge=Vector2(0,0)},
+		{tier=2, max=7, min=4, atlas_index=24, advanced = true, nudge=Vector2(0,0)},
+		{tier=1, max=8, min=3, atlas_index=25, advanced = true, nudge=Vector2(0,0)},
+		{tier=1, max=6, min=3, atlas_index=26, advanced = true, nudge=Vector2(0,0)},
+		{tier=2, max=10, min=5, atlas_index=27, advanced = true, nudge=Vector2(0,-4)},
+		{tier=1, max=8, min=4, atlas_index=28, advanced = true, nudge=Vector2(0,0)},
 	]
 }
 

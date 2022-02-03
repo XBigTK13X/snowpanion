@@ -21,6 +21,7 @@ var selected_ai_name
 var selected_expansion_name
 var plan_decks
 var first_plan_validated = false
+var first_player_plan_completed = false
 var player_temp_count
 
 var construction_deck
@@ -151,6 +152,9 @@ func update_game_area():
 	var count_label = construction_deck.count_label()		
 	var discard_label = discard_deck.count_label()
 	var ai_count_label = ai_deck.count_label()	
+
+	if(!first_plan_validated and first_player_plan_completed):
+		return handle_first_plan_validation()
 
 	if(!first_plan_validated and ai_completed_plans.size() > 0):
 		return handle_first_plan_validation()
@@ -296,7 +300,8 @@ func handle_first_plan_validation():
 
 func _on_plan_pressed(plan_card):
 	plan_card.toggle()
-	handle_first_plan_validation()
+	if(!first_plan_validated):
+		first_player_plan_completed = plan_card.is_completed()
 	update_chosen_plans()
 
 func _on_choose_offer(pick, discards):	

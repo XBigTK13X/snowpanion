@@ -155,8 +155,7 @@ func update_game_area():
 	var ai_count_label = ai_deck.count_label()	
 
 	if construction_deck.size() + discard_deck.size() < 3:
-		show_player_temp()
-		return
+		return end_game()
 		
 	var choices_container = GridContainer.new()
 	choices_container.set_columns(3)
@@ -165,8 +164,7 @@ func update_game_area():
 	var third_card = draw_construction_card()
 	
 	if ai_completed_plans.size() >= 3:
-		show_player_temp()
-		return
+		return end_game()
 		
 	var first_front_button = SC.Chrome.highlight_on_hover_button(first_card.front_texture.texture)
 	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
@@ -193,6 +191,12 @@ func update_game_area():
 		discard_deck.clear()
 		construction_deck.shuffle()
 		top_card = construction_deck.top_card()	
+	var end_game_button = SC.Chrome.text_button(self, "End Game", "_prompt_end_game", [])
+	end_game_button.rect_min_size = Vector2(200,100)
+	end_game_button.set_h_size_flags(Container.SIZE_FILL)
+	end_game_button.set_v_size_flags(Container.SIZE_FILL)
+	end_game_button.anchor_top = 0.5
+	end_game_button.anchor_bottom = 0.5
 	
 	var top_ai_card = ai_deck.top_card()
 
@@ -206,52 +210,75 @@ func update_game_area():
 	var first_row = HBoxContainer.new()
 	first_row.set("custom_constants/separation", 100)
 	var first_column = VBoxContainer.new()
+	first_column.set_alignment(BoxContainer.ALIGN_CENTER)
+	first_column.set("custom_constants/separation", 50)
 	var second_column = VBoxContainer.new()
+	second_column.set_alignment(BoxContainer.ALIGN_CENTER)
 	var third_column = VBoxContainer.new()
+	third_column.set_alignment(BoxContainer.ALIGN_CENTER)
+	third_column.set("custom_constants/separation", 50)
 	var fourth_column = VBoxContainer.new()
-	var second_row = HBoxContainer.new()
-	second_row.set("custom_constants/separation", 100)
+	fourth_column.set_alignment(BoxContainer.ALIGN_CENTER)
+	fourth_column.set("custom_constants/separation", 50)
 
 	SC.link(first_column, count_label)
 	SC.link(first_column, top_card.back_texture)
+	SC.link(first_column, end_game_button)
 	SC.link(second_column, pick_label)
 	SC.link(second_column, choices_container)		
+	SC.link(second_column, chosen_plans_container)
 	SC.link(third_column, expansion_label)
 	SC.link(third_column, solo_ai.texture)
 	SC.link(fourth_column, claimed_plans_container)
-	SC.link(second_row, chosen_plans_container)
 
 	if top_ai_card != null:
 		SC.link(third_column,top_ai_card.back_texture)
 
 	SC.link(third_column,ai_count_label)
 
-	var rows_container = VBoxContainer.new()
 	SC.link(first_row, first_column)
 	SC.link(first_row, second_column)
 	SC.link(first_row, third_column)
 	SC.link(first_row, fourth_column)
-	SC.link(rows_container, first_row)	
-	SC.link(rows_container, second_row)	
-	SC.link(game_area_container, rows_container)
+	SC.link(game_area_container, first_row)	
 	SC.link(companion_container, game_area_container)	
 	
 	if(GameData.debug_ai_scoring):
 		_on_choose_offer(first_card, [second_card, third_card])
 
+func _prompt_end_game():
+	var confirm = ConfirmationDialog.new()
+	confirm.rect_min_size = Vector2(400,200)
+	confirm.get_ok().rect_min_size = Vector2(200,100)
+	confirm.anchor_left = 0.4
+	confirm.anchor_top = 0.4
+	confirm.dialog_text = "Are you ready to end the game?"
+	confirm.window_title = "Are you sure?"	
+	confirm.connect("confirmed", self, "end_game")
+	confirm.popup_exclusive = true
+	container.add_child(confirm)
+	confirm.popup()
+
+func end_game():
+	show_player_temp()
+
 func update_chosen_plans():
 	if(chosen_plans_container == null):
 		chosen_plans_container = HBoxContainer.new()
-		chosen_plans_container.set("custom_constants/separation", 100)
 	else:
 		SC.remove_children(chosen_plans_container)
+	var all_plans_completed = true
 	for plan in chosen_plan_cards:
 		var button_texture = plan.front_texture.texture
 		if plan.is_completed():
 			button_texture = plan.back_texture.texture
+		else:
+			all_plans_completed = false
 		var plan_button = SC.Chrome.highlight_on_hover_button(button_texture)
 		plan_button.connect("pressed", self, "_on_plan_pressed", [plan])
 		chosen_plans_container.add_child(plan_button)
+	if(all_plans_completed):
+		end_game()
 
 func _on_plan_pressed(plan_card):
 	plan_card.toggle()
@@ -295,7 +322,7 @@ func show_ai_score():
 	scoring_container = SC.Chrome.center_container()
 
 	var scored_cards_container = GridContainer.new()
-	scored_cards_container.set_columns(10)	
+	scored_cards_container.set_columns(8)	
 	var scored_cards = ai_deck.get_all_cards()
 	for card in scored_cards:
 		# FIXME This is the only way I could get the textures to "scale" and stay within the bounds of the viewport
@@ -322,19 +349,29 @@ func show_ai_score():
 		SC.link(claimed_plans_container, plan.card.front_texture)
 		SC.link(claimed_plans_container, plan.plan_card.front_texture)
 
+	var close_companion_button = SC.Chrome.text_button(self, "Close Companion", "close_companion", [])
+	close_companion_button.set_h_size_flags(Container.SIZE_FILL)
+	close_companion_button.set_v_size_flags(Container.SIZE_FILL)
+	close_companion_button.rect_min_size = Vector2(200,100)
+
 	var hbox = HBoxContainer.new()
 	hbox.set("custom_constants/separation", 100)
 	var first_column = VBoxContainer.new()
 	var second_column = VBoxContainer.new()
+	var third_column = VBoxContainer.new()
 	second_column.set("custom_constants/separation", 100)
 	SC.link(hbox,first_column)
 	SC.link(hbox,second_column)
+	SC.link(hbox, third_column)
 	SC.link(first_column,solo_ai.texture)
 	SC.link(first_column,ai_score_label)
 	SC.link(second_column, scored_cards_container)
 	SC.link(second_column, claimed_plans_container)
+	SC.link(third_column, close_companion_button)
 	SC.link(scoring_container, hbox)
 	SC.link(container,scoring_container)
 
+func close_companion():
+	SC.Scenes.close_companion()
 
 	

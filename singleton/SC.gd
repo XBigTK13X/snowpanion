@@ -4,7 +4,16 @@ var Assets
 var Chrome
 var Clone
 var RNG
+var Scenes
 var Settings
+
+func reset():
+	Assets = _singleton('assets')
+	Chrome = _singleton('chrome')
+	Clone = _singleton('clone')
+	RNG = _singleton('rng')
+	Scenes = _singleton('scenes')
+	Settings = _singleton('settings')
 
 func clean(node):
 	if(node == null):
@@ -33,10 +42,3 @@ func _singleton(file):
 		node.static_init()
 	add_child(node)
 	return node
-
-func reset():
-	Assets = _singleton('assets')
-	Chrome = _singleton('chrome')
-	Clone = _singleton('clone')
-	RNG = _singleton('rng')
-	Settings = _singleton('settings')

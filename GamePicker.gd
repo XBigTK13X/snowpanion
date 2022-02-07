@@ -1,6 +1,7 @@
 extends Node
 
 var games = [
+	"To the Death",
 	"Welcome To"
 ]
 

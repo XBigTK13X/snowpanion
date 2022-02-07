@@ -4,6 +4,8 @@ var ConstructionDeck = load('res://companion/Welcome To/instance/construction-de
 var PlanDecks = load('res://companion/Welcome To/instance/plan-decks.gd')
 var AIScore = load('res://companion/Welcome To/instance/ai-score.gd')
 
+var GameData = SC.Assets.game_data("Welcome To")
+
 var container
 var ai_picker_container
 var expansion_picker_container
@@ -30,8 +32,6 @@ var discard_deck
 var ai_completed_plans = []
 
 var turn_states = []
-
-var GameData = SC.Assets.game_data("Welcome To")
 
 func _ready():	
 	container = get_node("/root/Container")

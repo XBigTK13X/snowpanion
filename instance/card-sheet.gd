@@ -5,32 +5,45 @@ var Card = load('res://instance/card.gd')
 var _texture
 var _columns
 var _rows
-var _card_height
-var _card_width
 var _clip_margin
+var _card_pixel_size
 
-func _init(texture, columns, rows, margin=Vector2(5,5)):
-	_texture = texture
-	_rows = rows
+func _init(stream_texture, columns, rows, card_pixel_size, margin=Vector2(5,5)):
 	_columns = columns
-	_card_width = _texture.get_width() / columns
-	_card_height = _texture.get_height() / rows
+	_rows = rows
+	_card_pixel_size = card_pixel_size
 	_clip_margin = margin
+	var texture_data: Image = stream_texture.get_data()
+	_texture = ImageTexture.new()
+	_texture.create_from_image(texture_data)
+	var texture_width = _card_pixel_size.x * _columns # + (_clip_margin.x * _columns)
+	var texture_height = _card_pixel_size.y * _rows # + (_clip_margin.y * _rows)
+	_texture.set_size_override(Vector2(texture_width, texture_height))
 
 func get_at_index(index):
+	var region_column = (index % (_columns))
+	var region_row = (index / (_columns))
+
 	var atlas_texture = AtlasTexture.new()
 	atlas_texture.set_atlas(_texture)
-	var region_column = (index % _columns)
-	var region_row = (index / _rows)
-	atlas_texture.set_region(Rect2((region_column * _card_width) + _clip_margin.x, (region_row * _card_height) + _clip_margin.y, _card_width - (_clip_margin.x * 2), _card_height - (_clip_margin.y * 2)))
+	var region_x = (region_column * _card_pixel_size.x) + _clip_margin.x
+	var region_y = (region_row * _card_pixel_size.y) + _clip_margin.y
+	var region_width = _card_pixel_size.x - (_clip_margin.x * 2)
+	var region_height = _card_pixel_size.y - (_clip_margin.y * 2)
+	atlas_texture.set_region(Rect2(region_x, region_y, region_width, region_height))
 	atlas_texture.set_filter_clip(true)
-	var texture = TextureRect.new()
-	texture.texture = atlas_texture
-	return Card.new(texture)
+
+	var texture_rect = TextureRect.new()
+	texture_rect.texture = atlas_texture
+	texture_rect.expand = true
+	texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	texture_rect.rect_min_size = _card_pixel_size
+
+	return Card.new(texture_rect)
 
 func get_all():
 	var cards = []
-	for index in range(0,_columns*_rows):
+	for index in range(0,_columns * _rows):
 		cards.push_back(get_at_index(index))
 	return cards
 

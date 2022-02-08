@@ -17,15 +17,17 @@ func reset():
 	Scenes = _singleton('scenes')
 	Settings = _singleton('settings')
 
-func clean(node):
+func clean(node, remove_parent=true):
 	if(node == null):
 		return
-	if(node.get_parent() == null):
-		return
-	node.get_parent().remove_child(node)
+	if(remove_parent):
+		if(node.get_parent() == null):
+			return
+		node.get_parent().remove_child(node)
 	for n in node.get_children():
 		node.remove_child(n)
-	node.queue_free()
+	if(remove_parent):
+		node.queue_free()
 
 func remove_children(node):
 	for n in node.get_children():

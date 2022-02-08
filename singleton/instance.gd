@@ -1,4 +1,9 @@
 extends Node
 
-var Card = load('res://instance/card-sheet.gd')
-var CardSheet = load('res://instance/card-sheet.gd')
+func get(script):
+	return load('res://instance/'+script+'.gd')
+
+var Card = get('card')
+var CardBook = get('card-book')
+var CardSheet = get('card-sheet')
+var Deck = get('deck')

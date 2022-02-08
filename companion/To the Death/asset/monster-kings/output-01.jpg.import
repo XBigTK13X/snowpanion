@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/output-4.jpg-af78f6dc82f8d1410a89ff47c98c2a1f.stex"
+path="res://.import/output-01.jpg-49e329411643835ba4f3acc753967bf3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://companion/To the Death/asset/monster-kings/output-4.jpg"
-dest_files=[ "res://.import/output-4.jpg-af78f6dc82f8d1410a89ff47c98c2a1f.stex" ]
+source_file="res://companion/To the Death/asset/monster-kings/output-01.jpg"
+dest_files=[ "res://.import/output-01.jpg-49e329411643835ba4f3acc753967bf3.stex" ]
 
 [params]
 

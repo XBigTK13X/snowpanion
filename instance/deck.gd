@@ -70,3 +70,17 @@ func build_picker(context=null, select_action=null, grid_columns=7):
 
 	SC.link(scroll_container, card_grid)
 	return scroll_container
+
+func set_back(stream_texture):
+	var texture_data: Image = stream_texture.get_data()
+	var texture_image = ImageTexture.new()
+	texture_image.create_from_image(texture_data)
+	var texture_size = Vector2(_cards[0].get_front().rect_min_size.x, _cards[0].get_front().rect_min_size.y)
+	texture_image.set_size_override(texture_size)
+	var texture_rect = TextureRect.new()
+	texture_rect.texture = texture_image
+	texture_rect.expand = true
+	texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	texture_rect.rect_min_size = texture_size
+	for card in _cards:
+		card.set_back(texture_rect)

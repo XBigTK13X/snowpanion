@@ -3,6 +3,8 @@ extends Node
 var _deck
 
 func _init(textures, sheet_data, index_range=null, skip_indices = null):
+	if(typeof(textures) != TYPE_ARRAY):
+		textures = [textures]
 	var image_index = 0
 	_deck = SC.Instance.Deck.new()
 	for texture in textures:

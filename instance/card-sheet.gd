@@ -17,7 +17,7 @@ func _init(stream_texture_front, columns, rows, card_pixel_size=_default_card_pi
 	_rows = rows
 	_card_pixel_size = card_pixel_size
 	if(card_pixel_size == null):
-		_card_pixel_size = _default_card_pixels		
+		_card_pixel_size = _default_card_pixels
 	_clip_margin = margin
 	if(margin == null):
 		_clip_margin = _default_card_margin

@@ -1,6 +1,7 @@
 extends Node
 
 var games = [
+	"Hadrians Wall",
 	"To the Death",
 	"Welcome To"
 ]
@@ -10,16 +11,15 @@ func _ready():
 
 	var game_picker_container = SC.Chrome.center_container()
 	SC.link(self, game_picker_container)
-	
-	var game_grid = GridContainer.new()
-	game_grid.set_columns(6)	
 
-	for game in games:	
+	var game_grid = SC.Chrome.margin_grid_container(6)
+
+	for game in games:
 		var game_button = SC.Chrome.text_button(self, game, "_on_game_chosen", [game])
-		SC.link(game_grid,game_button)		
-		
+		SC.link(game_grid,game_button)
+
 	var fullscreen_button = SC.Chrome.text_button(self, "Fullscreen", "_on_fullscreen_pressed", [])
-		
+
 	var vbox = VBoxContainer.new()
 	vbox.set("custom_constants/separation", 100)
 	SC.link(vbox, game_grid)

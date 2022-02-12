@@ -20,3 +20,6 @@ func get_front_button():
 
 func get_back_button():
 	return SC.Chrome.highlight_on_hover_button(_back_rect.texture)
+
+func set_back(texture_rect):
+	_back_rect = texture_rect

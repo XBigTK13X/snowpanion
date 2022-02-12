@@ -25,7 +25,7 @@ func setup_decks():
 			if(asset_index < 10):
 				asset_name = deck_info.asset_dir+'/output-0'+str(asset_index)+'.jpg'
 			assets.push_back(SC.Assets.load('To the Death', asset_name))
-		var card_book = SC.Instance.CardBook.new(assets, deck_info.index_range, GameData, deck_info.skip_indices)
+		var card_book = SC.Instance.CardBook.new(assets, GameData, deck_info.index_range, deck_info.skip_indices)
 		decks[deck_name] = card_book.get_deck()
 
 	# Remove the anti-hero. Including it makes the companion implementation more complicated.

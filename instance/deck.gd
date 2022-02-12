@@ -7,6 +7,9 @@ var _cards
 func _init(cards=[]):
 	_cards = cards
 
+func get_card(index):
+	return _cards[index]
+
 func shuffle():
 	_cards.shuffle()
 

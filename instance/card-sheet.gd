@@ -8,12 +8,20 @@ var _rows
 var _clip_margin
 var _card_pixel_size
 
-func _init(stream_texture, columns, rows, card_pixel_size, margin=Vector2(5,5)):
+var card_size_mm = Vector2(63, 88)
+var _default_card_pixels = Vector2(card_size_mm.x * 3.5, card_size_mm.y * 3.5)
+var _default_card_margin = Vector2(5,5)
+
+func _init(stream_texture_front, columns, rows, card_pixel_size=_default_card_pixels, margin=Vector2(5,5)):
 	_columns = columns
 	_rows = rows
 	_card_pixel_size = card_pixel_size
+	if(card_pixel_size == null):
+		_card_pixel_size = _default_card_pixels		
 	_clip_margin = margin
-	var texture_data: Image = stream_texture.get_data()
+	if(margin == null):
+		_clip_margin = _default_card_margin
+	var texture_data: Image = stream_texture_front.get_data()
 	_texture = ImageTexture.new()
 	_texture.create_from_image(texture_data)
 	var texture_width = _card_pixel_size.x * _columns # + (_clip_margin.x * _columns)

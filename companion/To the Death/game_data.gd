@@ -2,8 +2,6 @@ extends Node
 
 var card_sheet_columns = 4
 var card_sheet_rows = 2
-var card_size_mm = Vector2(63, 88)
-var card_size_pixel = Vector2(card_size_mm.x * 3.5, card_size_mm.y * 3.5)
 var card_margins = Vector2(4,0)
 
 var decks = {

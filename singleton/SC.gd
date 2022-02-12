@@ -34,10 +34,14 @@ func remove_children(node):
 		node.remove_child(n)
 
 func link(parent, child):
-	var current_parent = child.get_parent()
-	if(current_parent != null):
-		current_parent.remove_child(child)
-	parent.add_child(child)
+	if(typeof(child) == TYPE_ARRAY):
+		for c in child:
+			link(parent, c)
+	else:
+		var current_parent = child.get_parent()
+		if(current_parent != null):
+			current_parent.remove_child(child)
+		parent.add_child(child)
 
 func _singleton(file):
 	var node = load('res://singleton/' + file + '.gd').new()

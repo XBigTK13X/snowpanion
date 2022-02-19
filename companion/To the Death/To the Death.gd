@@ -1,6 +1,6 @@
 extends Node
 
-var GameData = SC.Assets.game_data("To the Death")
+var GameData = SC.Assets.game_data()
 
 var container
 var monster_king_picker
@@ -24,7 +24,7 @@ func setup_decks():
 			var asset_name = deck_info.asset_dir+'/output-'+str(asset_index)+'.jpg'
 			if(asset_index < 10):
 				asset_name = deck_info.asset_dir+'/output-0'+str(asset_index)+'.jpg'
-			assets.push_back(SC.Assets.load('To the Death', asset_name))
+			assets.push_back(SC.Assets.load(asset_name))
 		var card_book = SC.Instance.CardBook.new(assets, GameData, deck_info.index_range, deck_info.skip_indices)
 		decks[deck_name] = card_book.get_deck()
 
@@ -54,10 +54,10 @@ func choose_monsters():
 	var vbox = VBoxContainer.new()
 	chosen_monsters_list = HBoxContainer.new()
 	chosen_monsters_list.set_alignment(BoxContainer.ALIGN_CENTER)
-	chosen_monsters_list.rect_min_size = Vector2(0,GameData.card_size_pixel.y)
+	chosen_monsters_list.rect_min_size = Vector2(0,SC.Settings.Default_Card_Size_Pixels.y)
 	var row_two = HBoxContainer.new()
 	var card_picker = decks.monsters.build_picker(self, '_on_choose_monster')
-	card_picker.rect_min_size = Vector2(1900,GameData.card_size_pixel.y * 2.2)
+	card_picker.rect_min_size = Vector2(1900,SC.Settings.Default_Card_Size_Pixels.y * 2.2)
 	SC.link(row_two, card_picker)
 	SC.link(vbox, chosen_monsters_list)
 	SC.link(vbox, row_two)

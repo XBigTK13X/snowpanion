@@ -1,7 +1,6 @@
 extends Node
 
 var Assets
-var Chrome
 var Clone
 var Instance
 var RNG
@@ -10,7 +9,6 @@ var Settings
 
 func reset():
 	Assets = _singleton('assets')
-	Chrome = _singleton('chrome')
 	Clone = _singleton('clone')
 	Instance = _singleton('instance')
 	RNG = _singleton('rng')

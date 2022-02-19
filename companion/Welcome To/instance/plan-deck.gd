@@ -1,6 +1,6 @@
-var PlanCard = load('res://companion/Welcome To/instance/plan-card.gd')
+var PlanCard = SC.Assets.instance('plan-card')
 
-var GameData = SC.Assets.game_data("Welcome To")
+var GameData = SC.Assets.game_data()
 
 var _cards = []
 

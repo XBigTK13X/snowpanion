@@ -6,18 +6,18 @@ var _completed = false
 var front_texture
 var back_texture
 
-func _init(expansion, plan):    
+func _init(expansion, plan):
 	_plan = plan
 
 	front_texture = get_texture(expansion, 'front', plan.atlas_index)
 	back_texture = get_texture(expansion, 'back', plan.atlas_index)
 
 func get_texture(expansion, kind, index):
-	var textures = SC.Assets.load("Welcome To", expansion + "-objective-" + kind + ".jpg")
+	var textures = SC.Assets.load(expansion + "-objective-" + kind + ".jpg")
 	var atlas_texture = AtlasTexture.new()
 	atlas_texture.set_atlas(textures)
 	var texture_column = (index % 7)
-	var texture_row = (index / 7)    
+	var texture_row = (index / 7)
 	var card_width = 225.42
 	var card_height = 343.4
 	var clip_margin = Vector2(5,5)

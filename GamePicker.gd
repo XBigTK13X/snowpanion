@@ -2,6 +2,7 @@ extends Node
 
 var games = [
 	"Hadrians Wall",
+	"Marvel United",
 	"To the Death",
 	"Welcome To"
 ]
@@ -9,16 +10,16 @@ var games = [
 func _ready():
 	SC.reset()
 
-	var game_picker_container = SC.Chrome.center_container()
+	var game_picker_container = SC.Instance.CenterContainer.build()
 	SC.link(self, game_picker_container)
 
-	var game_grid = SC.Chrome.margin_grid_container(6)
+	var game_grid = SC.Instance.MarginGridContainer.build(6)
 
 	for game in games:
-		var game_button = SC.Chrome.text_button(self, game, "_on_game_chosen", [game])
+		var game_button = SC.Instance.TextButton.build(self, game, "_on_game_chosen", [game])
 		SC.link(game_grid,game_button)
 
-	var fullscreen_button = SC.Chrome.text_button(self, "Fullscreen", "_on_fullscreen_pressed", [])
+	var fullscreen_button = SC.Instance.TextButton.build(self, "Fullscreen", "_on_fullscreen_pressed", [])
 
 	var vbox = VBoxContainer.new()
 	vbox.set("custom_constants/separation", 100)
@@ -27,6 +28,7 @@ func _ready():
 	SC.link(game_picker_container,vbox)
 
 func _on_game_chosen(game):
+	SC.Assets.set_companion_name(game)
 	return get_tree().change_scene("res://companion/" + game + "/" + game + ".tscn")
 
 func _on_fullscreen_pressed():

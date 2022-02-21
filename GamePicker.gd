@@ -10,16 +10,16 @@ var games = [
 func _ready():
 	SC.reset()
 
-	var game_picker_container = SC.Instance.CenterContainer.build()
+	var game_picker_container = SC.Static.CenterContainer.build()
 	SC.link(self, game_picker_container)
 
-	var game_grid = SC.Instance.MarginGridContainer.build(6)
+	var game_grid = SC.Static.MarginGridContainer.build(6)
 
 	for game in games:
-		var game_button = SC.Instance.TextButton.build(self, game, "_on_game_chosen", [game])
+		var game_button = SC.Static.TextButton.build(self, game, "_on_game_chosen", [game])
 		SC.link(game_grid,game_button)
 
-	var fullscreen_button = SC.Instance.TextButton.build(self, "Fullscreen", "_on_fullscreen_pressed", [])
+	var fullscreen_button = SC.Static.TextButton.build(self, "Fullscreen", "_on_fullscreen_pressed", [])
 
 	var vbox = VBoxContainer.new()
 	vbox.set("custom_constants/separation", 100)

@@ -2,9 +2,15 @@ extends Node
 
 var card_size_pixels = Vector2(210,335)
 
-# Slots are count, start civilian, start thug
+const TOKEN = {
+	CIVILIAN = 'civilian',
+	HEALTH = 'health',
+	THREAT = 'threat',
+	THUG = 'thug'
+}
 
 var boxes = {
+	# Slots array is [count, start civilian, start thug]
 	core = {
 		locations = {
 			avengers_mansion = [3, 1, 0],

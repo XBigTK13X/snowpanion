@@ -38,7 +38,7 @@ func put_on_top(card):
 	deck_cards.push_front(card)
 
 func count_label():
-	var label = SC.Instance.Label.build('')
+	var label = SC.Static.Label.build('')
 	if(deck_cards.size() == 1):
 		label.text = str(deck_cards.size()) + " Card"
 	else:

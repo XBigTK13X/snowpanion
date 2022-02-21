@@ -6,6 +6,7 @@ var Instance
 var RNG
 var Scenes
 var Settings
+var Static
 
 func reset():
 	Assets = _singleton('assets')
@@ -14,6 +15,7 @@ func reset():
 	RNG = _singleton('rng')
 	Scenes = _singleton('scenes')
 	Settings = _singleton('settings')
+	Static = _singleton('static')
 
 func clean(node, remove_parent=true):
 	if(node == null):

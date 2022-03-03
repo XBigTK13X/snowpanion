@@ -9,10 +9,16 @@ var container
 var villains = {}
 var locations = {}
 
+var villain_picker
+var location_picker
+
+var chosen_villain_name
+var chosen_location_names
+
 func _ready():
 	container = get_node("/root/Container")
 	ingest_resources()
-	debug_assets()
+	show_villain_picker()
 
 func ingest_resources():
 	for box_name in GameData.boxes:
@@ -37,5 +43,21 @@ func debug_villains():
 
 func debug_assets():
 	#debug_locations()
-	debug_villains()
+	#debug_villains()
 	pass
+
+func show_villain_picker():
+	villain_picker = SC.Instance.ItemPicker.new(villains.values(), 3, self, 'pick_villain')
+	SC.link(container, villain_picker)
+
+func pick_villain(villain):
+	chosen_villain_name = villain._villain_name
+	show_location_picker()
+
+func show_location_picker():
+	SC.clean(villain_picker)
+	location_picker = SC.Instance.ItemMultiPicker.new(locations.values(), Location.SIZE_PIXELS.y, 4, 6, funcref(self, 'pick_location'))
+	SC.link(container, location_picker)
+
+func pick_location(_locations):
+	SC.clean(location_picker)

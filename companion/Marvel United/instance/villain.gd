@@ -47,3 +47,9 @@ func get_threat_deck():
 
 func get_plan_deck():
 	return _plan_deck
+
+func get_picker_button():
+	var button_texture = ImageTexture.new()
+	button_texture.create_from_image(_dashboard_bg.texture.get_data())
+	button_texture.set_size_override(Vector2(525, 233))
+	return SC.Static.HighlightButton.build(button_texture)

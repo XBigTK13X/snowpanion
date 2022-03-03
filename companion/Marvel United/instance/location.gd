@@ -3,6 +3,8 @@ extends Container
 var GameData = SC.Assets.game_data()
 var Token = SC.Assets.instance('token')
 
+const SIZE_PIXELS = Vector2(300, 300)
+
 var _box_name
 var _location_name
 var _texture_rect
@@ -36,7 +38,7 @@ func _init(box_name, location_name, location_info):
 	_texture_rect.texture = SC.Assets.load(box_name + "/location/" + location_name + '.jpg')
 	_texture_rect.expand = true
 	_texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	_texture_rect.rect_min_size = Vector2(300, 300)
+	_texture_rect.rect_min_size = SIZE_PIXELS
 
 	add_child(_texture_rect)
 
@@ -45,10 +47,10 @@ func _init(box_name, location_name, location_info):
 	_people_row.set("custom_constants/separation", 10)
 	_people_row.set_position(Vector2(SLOTS_X[_slot_count], 42))
 
-	for ii in range(0, _start_civilians):
+	for _ii in range(0, _start_civilians):
 		var token = Token.new(GameData.TOKEN.CIVILIAN)
 		SC.link(_people_row, token)
-	for ii in range(0, _start_thugs):
+	for _ii in range(0, _start_thugs):
 		var token = Token.new(GameData.TOKEN.THUG)
 		SC.link(_people_row, token)
 
@@ -58,5 +60,8 @@ func _init(box_name, location_name, location_info):
 	_threat_token.set_position(Vector2(10, 245))
 	add_child(_threat_token)
 
-
-
+func get_picker_button():
+	var button_texture = ImageTexture.new()
+	button_texture.create_from_image(_texture_rect.texture.get_data())
+	button_texture.set_size_override(SIZE_PIXELS)
+	return SC.Static.HighlightButton.build(button_texture)

@@ -65,3 +65,9 @@ func get_picker_button():
 	button_texture.create_from_image(_texture_rect.texture.get_data())
 	button_texture.set_size_override(SIZE_PIXELS)
 	return SC.Static.HighlightButton.build(button_texture)
+
+func set_threat(threat_card):
+	threat_card.set_position(Vector2(50,138))
+	threat_card.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	threat_card.rect_min_size = Vector2(230,165)
+	add_child(threat_card)

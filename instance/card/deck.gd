@@ -3,6 +3,7 @@ extends Node
 # The 0th element in _cards is the top of the deck.
 # The size-th element is the bottom.
 var _cards
+var _deck_back
 
 func _init(cards=[]):
 	_cards = cards
@@ -37,6 +38,9 @@ func draw_top():
 	if _cards.size() <= 0:
 		return null
 	return _cards.pop_front()
+
+func draw():
+	return draw_top()
 
 func add(cards):
 	if cards.has_method('size'):
@@ -84,3 +88,7 @@ func set_back(stream_texture):
 	texture_rect.rect_min_size = texture_size
 	for card in _cards:
 		card.set_back(texture_rect)
+	_deck_back = texture_rect
+
+func get_back():
+	return _deck_back

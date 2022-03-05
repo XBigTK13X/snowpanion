@@ -14,7 +14,7 @@ dest_files=[ "res://.import/avengers_tower.jpg-7c48f51a5ca9c6ea1396472080d8f726.
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

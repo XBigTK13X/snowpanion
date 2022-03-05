@@ -14,7 +14,7 @@ dest_files=[ "res://.import/front-solo.jpg-592f8e82ac5a65ad5cc62cd3a459a3a3.stex
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

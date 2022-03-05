@@ -14,7 +14,7 @@ dest_files=[ "res://.import/base-objective-front.jpg-4f71d269dfc038d6a445fe910a1
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

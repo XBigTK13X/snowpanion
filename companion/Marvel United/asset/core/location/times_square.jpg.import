@@ -14,7 +14,7 @@ dest_files=[ "res://.import/times_square.jpg-91456aa57283a2e22be82b06a41e77ca.st
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

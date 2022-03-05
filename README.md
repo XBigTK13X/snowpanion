@@ -2,7 +2,9 @@
 
 Run board game automa without the fiddly bits.
 
-[Grab the latest dev build here.](https://github.com/XBigTK13X/snowpanion/actions/workflows/Export%20all%20active%20templates.yml)
+[Try it in a web browser.](https://xbigtk13x.github.io/snowpanion/)
+
+[Grab the latest desktop build here.](https://github.com/XBigTK13X/snowpanion/actions/workflows/Export%20all%20active%20templates.yml)
 
 ## Disclaimer
 

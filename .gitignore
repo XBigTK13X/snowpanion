@@ -1,6 +1,7 @@
 .vscode/
 
 # Godot-specific ignores
+output/
 .import/
 export.cfg
 export_presets.cfg

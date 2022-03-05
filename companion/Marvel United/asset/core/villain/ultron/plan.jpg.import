@@ -14,7 +14,7 @@ dest_files=[ "res://.import/plan.jpg-402857c7947bc0ddcf4943c1e1013a24.stex" ]
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

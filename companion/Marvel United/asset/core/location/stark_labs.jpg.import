@@ -14,7 +14,7 @@ dest_files=[ "res://.import/stark_labs.jpg-1158e0987b7d046165c1db7e0ebcd1b4.stex
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

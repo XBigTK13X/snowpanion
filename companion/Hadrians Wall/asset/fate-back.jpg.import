@@ -14,7 +14,7 @@ dest_files=[ "res://.import/fate-back.jpg-d51e8972f6cb325f58f3e6048ab416de.stex"
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

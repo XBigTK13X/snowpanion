@@ -14,7 +14,7 @@ dest_files=[ "res://.import/back-fence.jpg-4c218028b00b7bf8a6e852b47cc21e54.stex
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

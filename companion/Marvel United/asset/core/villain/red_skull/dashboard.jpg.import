@@ -14,7 +14,7 @@ dest_files=[ "res://.import/dashboard.jpg-18efae8f560c14401af0545833c99a9a.stex"
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0

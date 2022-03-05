@@ -1,5 +1,5 @@
 name: "Export all active templates"
-on: 
+on:
   workflow_dispatch:
   push:
     branches:
@@ -59,40 +59,40 @@ jobs:
           name: linux
           path: output/linux
 
-  export-web:
-    name: Web Export
-    runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:3.3.4
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Setup
-        run: |
-          cp export_presets_ci.cfg export_presets.cfg
-          mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
-      - name: Web Build
-        run: |
-          mkdir -v -p output/web
-          godot -v --export "HTML5" ./output/web/index.html
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: web
-          path: output/web
-      # Installing rsync is needed in order to deploy to GitHub Pages. Without it, the build will fail.
-      - name: Install rsync
-        run: |
-          apt-get update && apt-get install -y rsync
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: output/web # The folder the action should deploy.
+#  export-web:
+#    name: Web Export
+#    runs-on: ubuntu-latest
+#    container:
+#      image: barichello/godot-ci:3.3.4
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          lfs: true
+#      - name: Setup
+#        run: |
+#          cp export_presets_ci.cfg export_presets.cfg
+#          mkdir -v -p ~/.local/share/godot/templates
+#          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+#      - name: Web Build
+#        run: |
+#          mkdir -v -p output/web
+#          godot -v --export "HTML5" ./output/web/index.html
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: web
+#          path: output/web
+#      # Installing rsync is needed in order to deploy to GitHub Pages. Without it, the build will fail.
+#      - name: Install rsync
+#        run: |
+#          apt-get update && apt-get install -y rsync
+#      - name: Deploy to GitHub Pages
+#        uses: JamesIves/github-pages-deploy-action@releases/v3
+#        with:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BRANCH: gh-pages # The branch the action should deploy to.
+#          FOLDER: output/web # The folder the action should deploy.
 
   export-mac:
     name: Mac Export

@@ -17,6 +17,17 @@ func reset():
 	Settings = _singleton('settings')
 	Static = _singleton('static')
 
+func _singleton(file):
+	var node = load('res://singleton/' + file + '.gd').new()
+	node.name = file
+	if(node.has_method('static_init')):
+		node.static_init()
+	add_child(node)
+	return node
+
+func get_container():
+	return get_node("/root/Container")
+
 func clean(node, remove_parent=true):
 	if(node == null):
 		return
@@ -38,15 +49,10 @@ func link(parent, child):
 		for c in child:
 			link(parent, c)
 	else:
-		var current_parent = child.get_parent()
-		if(current_parent != null):
-			current_parent.remove_child(child)
+		unparent(child)
 		parent.add_child(child)
 
-func _singleton(file):
-	var node = load('res://singleton/' + file + '.gd').new()
-	node.name = file
-	if(node.has_method('static_init')):
-		node.static_init()
-	add_child(node)
-	return node
+func unparent(child):
+	var current_parent = child.get_parent()
+	if(current_parent != null):
+		current_parent.remove_child(child)

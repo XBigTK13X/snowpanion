@@ -34,7 +34,7 @@ var ai_completed_plans = []
 var turn_states = []
 
 func _ready():
-	container = get_node("/root/Container")
+	container = SC.get_container()
 	show_ai_picker()
 
 func show_ai_picker():

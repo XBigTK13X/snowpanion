@@ -38,8 +38,10 @@ func get_at_index(index):
 	atlas_texture.set_region(Rect2(region_x, region_y, region_width, region_height))
 	atlas_texture.set_filter_clip(true)
 
+	var image_texture = ImageTexture.new()
+	image_texture.create_from_image(atlas_texture.get_image().get_data())
 	var texture_rect = TextureRect.new()
-	texture_rect.texture = atlas_texture
+	texture_rect.texture = image_texture
 	texture_rect.expand = true
 	texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
 	texture_rect.rect_min_size = _card_pixel_size

@@ -13,7 +13,7 @@ var chosen_monsters = {}
 var decks = {}
 
 func _ready():
-	container = get_node("/root/Container")
+	container = SC.get_container()
 	setup_decks()
 
 func setup_decks():

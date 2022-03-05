@@ -2,6 +2,8 @@ extends Node
 
 var GameData = SC.Assets.game_data()
 
+var DASHBOARD_SIZE_PIXELS = Vector2(525, 233)
+
 var _box_name
 var _villain_name
 var _villain_info
@@ -17,12 +19,11 @@ func _init(box_name, villain_name, villain_info):
 	_villain_info = villain_info
 
 	_dashboard = Container.new()
-	_dashboard.rect_min_size = Vector2(525, 233)
-	_dashboard_bg = TextureRect.new()
-	_dashboard_bg.texture = get_asset('dashboard.jpg')
+	_dashboard.rect_min_size = DASHBOARD_SIZE_PIXELS
+	_dashboard_bg = SC.Instance.ZoomTextureButton.new(get_asset('dashboard.jpg'))
 	_dashboard_bg.expand = true
 	_dashboard_bg.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	_dashboard_bg.rect_min_size = Vector2(525, 233)
+	_dashboard_bg.rect_min_size = DASHBOARD_SIZE_PIXELS
 	_dashboard.add_child(_dashboard_bg)
 
 	var threat_deck_info = SC.Clone.deep(GameData.threat_deck_info)
@@ -50,6 +51,6 @@ func get_plan_deck():
 
 func get_picker_button():
 	var button_texture = ImageTexture.new()
-	button_texture.create_from_image(_dashboard_bg.texture.get_data())
-	button_texture.set_size_override(Vector2(525, 233))
+	button_texture.create_from_image(_dashboard_bg.get_texture().get_data())
+	button_texture.set_size_override(DASHBOARD_SIZE_PIXELS)
 	return SC.Static.HighlightButton.build(button_texture)

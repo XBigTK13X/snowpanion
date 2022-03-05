@@ -7,13 +7,14 @@ const SIZE_PIXELS = Vector2(300, 300)
 
 var _box_name
 var _location_name
-var _texture_rect
+var location_bg
 var _threat
 var _slot_count
 var _start_civilians
 var _start_thugs
 var _people_row
 var _threat_token
+var _threat_button
 
 const SLOTS_X = [
 	120,
@@ -34,13 +35,13 @@ func _init(box_name, location_name, location_info):
 	_start_civilians = location_info[1]
 	_start_thugs = location_info[2]
 
-	_texture_rect = TextureRect.new()
-	_texture_rect.texture = SC.Assets.load(box_name + "/location/" + location_name + '.jpg')
-	_texture_rect.expand = true
-	_texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	_texture_rect.rect_min_size = SIZE_PIXELS
+	location_bg = SC.Instance.ZoomTextureButton.new(SC.Assets.load(box_name + "/location/" + location_name + '.jpg'))
+	location_bg.expand = true
+	location_bg.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	location_bg.rect_min_size = SIZE_PIXELS
 
-	add_child(_texture_rect)
+
+	add_child(location_bg)
 
 	_people_row = HBoxContainer.new()
 	_people_row.set_alignment(BoxContainer.ALIGN_CENTER)
@@ -62,12 +63,16 @@ func _init(box_name, location_name, location_info):
 
 func get_picker_button():
 	var button_texture = ImageTexture.new()
-	button_texture.create_from_image(_texture_rect.texture.get_data())
+	button_texture.create_from_image(location_bg.get_texture().get_data())
 	button_texture.set_size_override(SIZE_PIXELS)
 	return SC.Static.HighlightButton.build(button_texture)
 
-func set_threat(threat_card):
-	threat_card.set_position(Vector2(50,138))
-	threat_card.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	threat_card.rect_min_size = Vector2(230,165)
-	add_child(threat_card)
+func set_threat(threat_texture):
+	#threat_texture.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	#threat_texture.rect_min_size = Vector2(230,165)
+	#threat_texture.set_size_override(Vector2(230,165))
+	_threat_button = SC.Instance.ZoomTextureButton.new(threat_texture)
+	_threat_button.set_position(Vector2(50,138))
+	_threat_button.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	_threat_button.rect_min_size = Vector2(230,165)
+	add_child(_threat_button)

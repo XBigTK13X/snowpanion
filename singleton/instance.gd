@@ -12,3 +12,4 @@ var Deck = get('card/deck')
 # GUI
 var ItemPicker = get('gui/item-picker')
 var ItemMultiPicker = get('gui/item-multi-picker')
+var ZoomTextureButton = get('gui/zoom-texture-button')

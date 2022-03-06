@@ -38,7 +38,7 @@ func _init(box_name, villain_name, villain_info):
 	_plan_deck.set_back(get_asset('plan-back.jpg'))
 
 func get_asset(relative_path):
-	return SC.Assets.load(_box_name + '/villain/' + _villain_name + '/' + relative_path)
+	return SC.Assets.grab(_box_name + '/villain/' + _villain_name + '/' + relative_path)
 
 func get_dashboard():
 	return _dashboard
@@ -53,4 +53,4 @@ func get_picker_button():
 	var button_texture = ImageTexture.new()
 	button_texture.create_from_image(_dashboard_bg.get_texture().get_data())
 	button_texture.set_size_override(DASHBOARD_SIZE_PIXELS)
-	return SC.Static.HighlightButton.build(button_texture)
+	return SC.Statics.HighlightButton.build(button_texture)

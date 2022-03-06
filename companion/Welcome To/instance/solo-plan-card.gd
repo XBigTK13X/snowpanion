@@ -12,7 +12,7 @@ func _init(name, tier, texture_index):
 	_texture_index = texture_index
 	_tier = tier
 
-	var cards_texture = SC.Assets.load("front-solo.jpg")
+	var cards_texture = SC.Assets.grab("front-solo.jpg")
 
 	var atlas_texture = AtlasTexture.new()
 	atlas_texture.set_atlas(cards_texture)

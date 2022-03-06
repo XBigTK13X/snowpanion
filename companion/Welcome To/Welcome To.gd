@@ -44,13 +44,13 @@ func show_ai_picker():
 		card_size_pixels = Vector2(210, 320),
 		card_margins = Vector2(7,12)
 	}
-	var ai_deck_front = SC.Instance.CardBook.new([SC.Assets.load("front-solo.jpg")], ai_sheet_data).get_deck()
-	var ai_deck_back = SC.Instance.CardBook.new([SC.Assets.load("back-solo.jpg")], ai_sheet_data).get_deck()
+	var ai_deck_front = SC.Instance.CardBook.new([SC.Assets.grab("front-solo.jpg")], ai_sheet_data).get_deck()
+	var ai_deck_back = SC.Instance.CardBook.new([SC.Assets.grab("back-solo.jpg")], ai_sheet_data).get_deck()
 
-	ai_picker_container = SC.Static.CenterContainer.build()
+	ai_picker_container = SC.Statics.CenteredContainer().build()
 	SC.link(container,ai_picker_container)
 
-	var ai_grid = SC.Static.MarginGridContainer.build(5)
+	var ai_grid = SC.Statics.MarginGridContainer.build(5)
 
 	for solo_ai_name in GameData.solo_ais:
 		var solo_ai = GameData.solo_ais[solo_ai_name]
@@ -71,16 +71,16 @@ func _on_solo_ai_pressed(solo_ai_name):
 	show_expansion_picker()
 
 func show_expansion_picker():
-	expansion_picker_container = SC.Static.CenterContainer.build()
+	expansion_picker_container = SC.Statics.CenteredContainer().build()
 	SC.link(container,expansion_picker_container)
 
-	var expansion_grid = SC.Static.MarginGridContainer.build(3)
+	var expansion_grid = SC.Statics.MarginGridContainer.build(3)
 
 	for expansion_name in GameData.expansions:
 		var expansion = GameData.expansions[expansion_name]
 		if ! expansion.supported:
 			continue
-		var expansion_button = SC.Static.TextButton.build(self, expansion.display, "_on_expansion_pressed", [expansion_name])
+		var expansion_button = SC.Statics.TextButton.build(self, expansion.display, "_on_expansion_pressed", [expansion_name])
 		SC.link(expansion_grid,expansion_button)
 
 	SC.link(expansion_picker_container,expansion_grid)
@@ -93,13 +93,13 @@ func _on_expansion_pressed(expansion_name):
 
 func show_plan_picker(plan_index=0):
 	SC.clean(plan_picker_container)
-	plan_picker_container = SC.Static.CenterContainer.build()
+	plan_picker_container = SC.Statics.CenteredContainer().build()
 
-	var grid_container = SC.Static.MarginGridContainer.build(6)
+	var grid_container = SC.Statics.MarginGridContainer.build(6)
 
 	var plan_deck = plan_decks.get_deck(plan_index)
 	for card in plan_deck.get_all_cards():
-		var card_button = SC.Static.HighlightButton.build(card.front_texture.texture)
+		var card_button = SC.Statics.HighlightButton.build(card.front_texture.texture)
 		card_button.connect("pressed", self, "_on_plan_chosen", [card])
 		SC.link(grid_container, card_button)
 
@@ -146,8 +146,8 @@ func update_game_area():
 	SC.clean(game_area_container)
 
 	var expansion = GameData.expansions[selected_expansion_name]
-	var expansion_label = SC.Static.Label.build("Expansion: " + expansion.display)
-	var pick_label = SC.Static.Label.build("Select a card to give to the AI")
+	var expansion_label = SC.Statics.TextLabel.build("Expansion: " + expansion.display)
+	var pick_label = SC.Statics.TextLabel.build("Select a card to give to the AI")
 	var count_label = construction_deck.count_label()
 	var discard_label = discard_deck.count_label()
 	var ai_count_label = ai_deck.count_label()
@@ -164,22 +164,22 @@ func update_game_area():
 	if ai_completed_plans.size() >= 3:
 		return end_game()
 
-	var choices_container = SC.Static.MarginGridContainer.build(3)
+	var choices_container = SC.Statics.MarginGridContainer.build(3)
 	var first_card = draw_construction_card()
 	var second_card = draw_construction_card()
 	var third_card = draw_construction_card()
 
-	var first_front_button = SC.Static.HighlightButton.build(first_card.front_texture.texture)
+	var first_front_button = SC.Statics.HighlightButton.build(first_card.front_texture.texture)
 	first_front_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
-	var second_front_button = SC.Static.HighlightButton.build(second_card.front_texture.texture)
+	var second_front_button = SC.Statics.HighlightButton.build(second_card.front_texture.texture)
 	second_front_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
-	var third_front_button = SC.Static.HighlightButton.build(third_card.front_texture.texture)
+	var third_front_button = SC.Statics.HighlightButton.build(third_card.front_texture.texture)
 	third_front_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
-	var first_back_button = SC.Static.HighlightButton.build(first_card.back_texture.texture)
+	var first_back_button = SC.Statics.HighlightButton.build(first_card.back_texture.texture)
 	first_back_button.connect("pressed", self, "_on_choose_offer", [first_card,[second_card,third_card]])
-	var second_back_button = SC.Static.HighlightButton.build(second_card.back_texture.texture)
+	var second_back_button = SC.Statics.HighlightButton.build(second_card.back_texture.texture)
 	second_back_button.connect("pressed", self, "_on_choose_offer", [second_card,[first_card,third_card]])
-	var third_back_button = SC.Static.HighlightButton.build(third_card.back_texture.texture)
+	var third_back_button = SC.Statics.HighlightButton.build(third_card.back_texture.texture)
 	third_back_button.connect("pressed", self, "_on_choose_offer", [third_card,[first_card,second_card]])
 
 	var top_card = construction_deck.top_card()
@@ -188,7 +188,7 @@ func update_game_area():
 		discard_deck.clear()
 		construction_deck.shuffle()
 		top_card = construction_deck.top_card()
-	var end_game_button = SC.Static.TextButton.build(self, "End Game", "_prompt_end_game", [])
+	var end_game_button = SC.Statics.TextButton.build(self, "End Game", "_prompt_end_game", [])
 	end_game_button.rect_min_size = Vector2(200,100)
 	end_game_button.set_h_size_flags(Container.SIZE_FILL)
 	end_game_button.set_v_size_flags(Container.SIZE_FILL)
@@ -203,7 +203,7 @@ func update_game_area():
 
 	update_chosen_plans()
 
-	game_area_container = SC.Static.CenterContainer.build()
+	game_area_container = SC.Statics.CenteredContainer().build()
 	var first_row = HBoxContainer.new()
 	first_row.set("custom_constants/separation", 100)
 	var first_column = VBoxContainer.new()
@@ -270,7 +270,7 @@ func update_chosen_plans():
 			button_texture = plan.back_texture.texture
 		else:
 			all_plans_completed = false
-		var plan_button = SC.Static.HighlightButton.build(button_texture)
+		var plan_button = SC.Statics.HighlightButton.build(button_texture)
 		plan_button.connect("pressed", self, "_on_plan_pressed", [plan])
 		chosen_plans_container.add_child(plan_button)
 	if(all_plans_completed):
@@ -301,7 +301,7 @@ func _on_choose_offer(pick, discards):
 
 func show_player_temp():
 	SC.clean(companion_container)
-	player_temp_container = SC.Static.CenterContainer.build()
+	player_temp_container = SC.Statics.CenteredContainer().build()
 
 	var box = VBoxContainer.new()
 
@@ -309,11 +309,11 @@ func show_player_temp():
 	grid.set_columns(5)
 
 	for ii in range(0,25):
-		var player_temp_button = SC.Static.TextButton.build(self, str(ii), "_on_player_temp_click", [ii])
+		var player_temp_button = SC.Statics.TextButton.build(self, str(ii), "_on_player_temp_click", [ii])
 		player_temp_button.rect_min_size = Vector2(200,100)
 		SC.link(grid,player_temp_button)
 
-	var label = SC.Static.Label.build("How many temp agency cards were used by the player?")
+	var label = SC.Statics.TextLabel.build("How many temp agency cards were used by the player?")
 	SC.link(box,label)
 	SC.link(box,grid)
 	SC.link(player_temp_container,box)
@@ -325,7 +325,7 @@ func _on_player_temp_click(amount):
 
 func show_ai_score():
 	SC.clean(player_temp_container)
-	scoring_container = SC.Static.CenterContainer.build()
+	scoring_container = SC.Statics.CenteredContainer().build()
 
 	var scored_cards_container = GridContainer.new()
 	scored_cards_container.set_columns(8)
@@ -340,7 +340,7 @@ func show_ai_score():
 
 	var ai_score = AIScore.new(GameData.solo_ais[selected_ai_name], GameData.expansions[selected_expansion_name], ai_completed_plans, scored_cards, player_temp_count)
 	ai_score.calculate()
-	var ai_score_label = SC.Static.Label.build(ai_score.format_breakdown())
+	var ai_score_label = SC.Statics.TextLabel.build(ai_score.format_breakdown())
 
 	var solo_ai = GameData.solo_ais[selected_ai_name]
 
@@ -355,7 +355,7 @@ func show_ai_score():
 		SC.link(claimed_plans_container, plan.card.front_texture)
 		SC.link(claimed_plans_container, plan.plan_card.front_texture)
 
-	var close_companion_button = SC.Static.TextButton.build(self, "Close Companion", "close_companion", [])
+	var close_companion_button = SC.Statics.TextButton.build(self, "Close Companion", "close_companion", [])
 	close_companion_button.set_h_size_flags(Container.SIZE_FILL)
 	close_companion_button.set_v_size_flags(Container.SIZE_FILL)
 	close_companion_button.rect_min_size = Vector2(200,100)

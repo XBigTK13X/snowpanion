@@ -24,7 +24,7 @@ func put_on_top(card):
 	_cards.push_front(card)
 
 func count_label():
-	var label = SC.Static.Label.build('')
+	var label = SC.Statics.TextLabel.build('')
 	if(_cards.size() == 1):
 		label.text = str(_cards.size()) + " Card"
 	else:
@@ -64,7 +64,7 @@ func build_picker(context=null, select_action=null, grid_columns=7):
 	scroll_container.get_h_scrollbar().rect_min_size.y = 35
 	scroll_container.margin_top = 10
 	scroll_container.margin_left = 10
-	var card_grid = SC.Static.MarginGridContainer.build(grid_columns)
+	var card_grid = SC.Statics.MarginGridContainer.build(grid_columns)
 
 	for card in _cards:
 		var button = card.get_front_button()

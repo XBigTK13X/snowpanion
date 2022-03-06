@@ -13,7 +13,7 @@ func _init(expansion, plan):
 	back_texture = get_texture(expansion, 'back', plan.atlas_index)
 
 func get_texture(expansion, kind, index):
-	var textures = SC.Assets.load(expansion + "-objective-" + kind + ".jpg")
+	var textures = SC.Assets.grab(expansion + "-objective-" + kind + ".jpg")
 	var atlas_texture = AtlasTexture.new()
 	atlas_texture.set_atlas(textures)
 	var texture_column = (index % 7)

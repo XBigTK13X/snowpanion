@@ -16,10 +16,10 @@ func get_back():
 	return _back_rect
 
 func get_front_button():
-	return SC.Static.HighlightButton.build(_front_rect.texture)
+	return SC.Statics.HighlightButton.build(_front_rect.texture)
 
 func get_back_button():
-	return SC.Static.HighlightButton.build(_back_rect.texture)
+	return SC.Statics.HighlightButton.build(_back_rect.texture)
 
 func set_back(texture_rect):
 	_back_rect = texture_rect

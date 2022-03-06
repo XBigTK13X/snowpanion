@@ -33,13 +33,13 @@ func ingest_resources():
 			villains[box_name + '-' + villain_name] = Villain.new(box_name, villain_name, box.villains[villain_name])
 
 func debug_locations():
-	var grid = SC.Static.MarginGridContainer.build(6)
+	var grid = SC.Statics.MarginGridContainer.build(6)
 	for location_key in locations:
 		SC.link(grid, locations[location_key])
 	SC.link(container, grid)
 
 func debug_villains():
-	var grid = SC.Static.MarginGridContainer.build(6)
+	var grid = SC.Statics.MarginGridContainer.build(6)
 	for villain_key in villains:
 		var villain = villains[villain_key]
 		SC.link(grid, villain.get_dashboard())
@@ -80,7 +80,7 @@ func locations_chosen(items):
 	show_companion()
 
 func show_companion():
-	var wrapper = SC.Static.CenterContainer.build()
+	var wrapper = SC.Statics.CenteredContainer().build()
 	companion_container = HBoxContainer.new()
 	var villain_container = VBoxContainer.new()
 	var locations_container = HBoxContainer.new()

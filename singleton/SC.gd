@@ -6,7 +6,7 @@ var Instance
 var RNG
 var Scenes
 var Settings
-var Static
+var Statics
 
 func reset():
 	Assets = _singleton('assets')
@@ -15,7 +15,7 @@ func reset():
 	RNG = _singleton('rng')
 	Scenes = _singleton('scenes')
 	Settings = _singleton('settings')
-	Static = _singleton('static')
+	Statics = _singleton('statics')
 
 func _singleton(file):
 	var node = load('res://singleton/' + file + '.gd').new()

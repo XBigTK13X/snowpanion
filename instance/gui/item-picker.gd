@@ -6,7 +6,7 @@ func _init(items, grid_columns, select_context, select_action):
 	get_h_scrollbar().rect_min_size.y = 35
 	margin_top = 10
 	margin_left = 10
-	var item_grid = SC.Static.MarginGridContainer.build(grid_columns)
+	var item_grid = SC.Statics.MarginGridContainer.build(grid_columns)
 
 	for item in items:
 		var button = item.get_picker_button()

@@ -13,7 +13,7 @@ func _init(kind, number, texture_index):
 	_texture_index = texture_index
 
 	var atlas_texture = AtlasTexture.new()
-	atlas_texture.set_atlas(SC.Assets.load("front-"+kind+".jpg"))
+	atlas_texture.set_atlas(SC.Assets.grab("front-"+kind+".jpg"))
 	var texture_column = (texture_index % 7)
 	var texture_row = (texture_index / 7)
 	var card_width = 225.42
@@ -26,7 +26,7 @@ func _init(kind, number, texture_index):
 	front_texture.texture = atlas_texture
 
 	var back_atlas = AtlasTexture.new()
-	back_atlas.set_atlas(SC.Assets.load("back-" + kind + ".jpg"))
+	back_atlas.set_atlas(SC.Assets.grab("back-" + kind + ".jpg"))
 	back_atlas.set_region(Rect2(5,5,215,330))
 	back_atlas.set_filter_clip(true)
 	back_texture = TextureRect.new()

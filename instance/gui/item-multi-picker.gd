@@ -21,7 +21,7 @@ func _init(items, item_height_pixels, grid_columns, select_item_count, callback)
 	get_h_scrollbar().rect_min_size.y = 35
 	margin_top = 10
 	margin_left = 10
-	_item_grid = SC.Static.MarginGridContainer.build(grid_columns)
+	_item_grid = SC.Statics.MarginGridContainer.build(grid_columns)
 	_item_grid.rect_min_size = Vector2(1900, item_height_pixels)
 
 	for item in items:

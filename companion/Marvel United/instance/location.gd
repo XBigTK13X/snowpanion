@@ -35,7 +35,7 @@ func _init(box_name, location_name, location_info):
 	_start_civilians = location_info[1]
 	_start_thugs = location_info[2]
 
-	location_bg = SC.Instance.ZoomTextureButton.new(SC.Assets.load(box_name + "/location/" + location_name + '.jpg'))
+	location_bg = SC.Instance.ZoomTextureButton.new(SC.Assets.grab(box_name + "/location/" + location_name + '.jpg'))
 	location_bg.expand = true
 	location_bg.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
 	location_bg.rect_min_size = SIZE_PIXELS
@@ -65,7 +65,7 @@ func get_picker_button():
 	var button_texture = ImageTexture.new()
 	button_texture.create_from_image(location_bg.get_texture().get_data())
 	button_texture.set_size_override(SIZE_PIXELS)
-	return SC.Static.HighlightButton.build(button_texture)
+	return SC.Statics.HighlightButton.build(button_texture)
 
 func set_threat(threat_texture):
 	#threat_texture.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)

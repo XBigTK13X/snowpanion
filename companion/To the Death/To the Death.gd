@@ -24,7 +24,7 @@ func setup_decks():
 			var asset_name = deck_info.asset_dir+'/output-'+str(asset_index)+'.jpg'
 			if(asset_index < 10):
 				asset_name = deck_info.asset_dir+'/output-0'+str(asset_index)+'.jpg'
-			assets.push_back(SC.Assets.load(asset_name))
+			assets.push_back(SC.Assets.grab(asset_name))
 		var card_book = SC.Instance.CardBook.new(assets, GameData, deck_info.index_range, deck_info.skip_indices)
 		decks[deck_name] = card_book.get_deck()
 

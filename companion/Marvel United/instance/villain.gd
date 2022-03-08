@@ -27,7 +27,7 @@ func _init(box_name, villain_name, villain_info):
 	_dashboard.add_child(_dashboard_bg)
 
 	var threat_deck_info = SC.Clone.deep(GameData.threat_deck_info)
-	threat_deck_info.card_size_pixels = GameData.turned_card_size_pixels
+	threat_deck_info.card_size_pixels = GameData.location_threat_size_pixels
 	var threat_card_book = SC.Instance.CardBook.new(get_asset('threat.jpg'), threat_deck_info, threat_deck_info.index_range)
 	_threat_deck = threat_card_book.get_deck()
 

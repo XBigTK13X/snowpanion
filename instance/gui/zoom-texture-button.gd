@@ -11,6 +11,9 @@ func _init(texture):
 
 
 	var modal_texture = ImageTexture.new()
+	# TODO This won't work for atlastexures
+	# Godot 4.0 has a potential fix in get_image()
+	# but that won't be backported and 4.0 is a hot mess
 	modal_texture.create_from_image(texture.get_data())
 
 	_modal = TextureButton.new()

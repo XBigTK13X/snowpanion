@@ -3,6 +3,8 @@ extends Node
 var card_size_pixels = Vector2(248,346.5)
 var turned_card_size_pixels = Vector2(346.5,248)
 
+var location_threat_size_pixels = Vector2(230,165)
+
 var threat_deck_info = {
 	index_range = [0,5],
 	card_sheet_rows = 3,

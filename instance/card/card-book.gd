@@ -17,8 +17,14 @@ func _init(textures, sheet_data, index_range=null, skip_indices = null):
 		var card_sheet = SC.Instance.CardSheet.new(
 			texture, sheet_data.card_sheet_columns, sheet_data.card_sheet_rows, pixels_size, margins_size
 		)
+		var zoomed_sheet = SC.Instance.CardSheet.new(
+			texture, sheet_data.card_sheet_columns, sheet_data.card_sheet_rows, Vector2(pixels_size.x * 5, pixels_size.y * 5), margins_size
+		)
 		var cards = card_sheet.get_all()
-		for card in cards:
+		var zoomed_cards = zoomed_sheet.get_all()
+		for ii in range(0,cards.size()):
+			var card = cards[ii]
+			card.set_zoomed(zoomed_cards[ii].get_front())
 			var skip = false
 			if skip_indices != null:
 				for skip_index in skip_indices:

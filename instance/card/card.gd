@@ -2,6 +2,7 @@ extends Node
 
 var _front_rect
 var _back_rect
+var _zoomed_texture
 
 func _init(front, back = null):
 	_front_rect = front
@@ -23,3 +24,9 @@ func get_back_button():
 
 func set_back(texture_rect):
 	_back_rect = texture_rect
+
+func get_zoomed():
+	return _zoomed_texture
+
+func set_zoomed(texture):
+	_zoomed_texture = texture

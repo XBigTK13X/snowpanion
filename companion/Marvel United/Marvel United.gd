@@ -97,7 +97,7 @@ func show_companion():
 	var threats = chosen_villain.get_threat_deck()
 	threats.shuffle()
 	for location in chosen_locations:
-		location.set_threat(threats.draw().get_front().texture)
+		location.set_threat(threats.draw())
 
 	SC.link(locations_first_row, [chosen_locations[0], chosen_locations[1], chosen_locations[2]])
 	SC.link(locations_second_row, [chosen_locations[3], chosen_locations[4], chosen_locations[5]])

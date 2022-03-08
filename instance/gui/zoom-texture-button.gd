@@ -3,7 +3,7 @@ extends TextureButton
 var _texture
 var _modal
 
-func _init(texture):
+func _init(texture, zoomed_texture = null):
 	_texture = texture
 	self.texture_normal = texture
 	var _connect_err = connect('pressed', self, '_show_modal')
@@ -14,7 +14,11 @@ func _init(texture):
 	# TODO This won't work for atlastexures
 	# Godot 4.0 has a potential fix in get_image()
 	# but that won't be backported and 4.0 is a hot mess
-	modal_texture.create_from_image(texture.get_data())
+	# Thus a second zoomed texture for now to work around scaling an AtlasTexture
+	if( zoomed_texture != null):
+		modal_texture = zoomed_texture
+	else:
+		modal_texture.create_from_image(texture.get_data())
 
 	_modal = TextureButton.new()
 	_modal.texture_normal = modal_texture

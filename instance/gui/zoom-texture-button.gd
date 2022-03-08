@@ -3,12 +3,16 @@ extends TextureButton
 var _texture
 var _modal
 
-func _init(texture):
+func _init(texture, min_size = null):
 	_texture = texture
 	self.texture_normal = texture
 	var _connect_err = connect('pressed', self, '_show_modal')
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
+	expand = true
+	set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
+	rect_min_size = texture.get_size()
+	if min_size != null:
+		rect_min_size = min_size
 	var modal_texture = ImageTexture.new()
 
 	# FIXME This is an inefficient workaround for AtlasTexture not supporting scaling

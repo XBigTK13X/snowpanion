@@ -19,6 +19,7 @@ var plan_deck_info = {
 
 const TOKEN = {
 	CIVILIAN = 'civilian',
+	EMPTY = 'empty',
 	HEALTH = 'health',
 	THREAT = 'threat',
 	THUG = 'thug'

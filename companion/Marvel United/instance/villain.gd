@@ -20,10 +20,7 @@ func _init(box_name, villain_name, villain_info):
 
 	_dashboard = Container.new()
 	_dashboard.rect_min_size = DASHBOARD_SIZE_PIXELS
-	_dashboard_bg = SC.Instance.ZoomTextureButton.new(get_asset('dashboard.jpg'))
-	_dashboard_bg.expand = true
-	_dashboard_bg.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	_dashboard_bg.rect_min_size = DASHBOARD_SIZE_PIXELS
+	_dashboard_bg = SC.Instance.ZoomTextureButton.new(get_asset('dashboard.jpg'), DASHBOARD_SIZE_PIXELS)
 	_dashboard.add_child(_dashboard_bg)
 
 	var threat_deck_info = SC.Clone.deep(GameData.threat_deck_info)

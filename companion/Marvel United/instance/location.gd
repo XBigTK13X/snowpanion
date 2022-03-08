@@ -35,11 +35,7 @@ func _init(box_name, location_name, location_info):
 	_start_civilians = location_info[1]
 	_start_thugs = location_info[2]
 
-	location_bg = SC.Instance.ZoomTextureButton.new(SC.Assets.load(box_name + "/location/" + location_name + '.jpg'))
-	location_bg.expand = true
-	location_bg.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
-	location_bg.rect_min_size = SIZE_PIXELS
-
+	location_bg = SC.Instance.ZoomTextureButton.new(SC.Assets.load(box_name + "/location/" + location_name + '.jpg'), SIZE_PIXELS)
 
 	add_child(location_bg)
 
@@ -49,10 +45,13 @@ func _init(box_name, location_name, location_info):
 	_people_row.set_position(Vector2(SLOTS_X[_slot_count], 42))
 
 	for _ii in range(0, _start_civilians):
-		var token = Token.new(GameData.TOKEN.CIVILIAN)
+		var token = Token.new(GameData.TOKEN.CIVILIAN, true)
 		SC.link(_people_row, token)
 	for _ii in range(0, _start_thugs):
-		var token = Token.new(GameData.TOKEN.THUG)
+		var token = Token.new(GameData.TOKEN.THUG, true)
+		SC.link(_people_row, token)
+	for _ii in range(0,_slot_count - _start_civilians - _start_thugs):
+		var token = Token.new(GameData.TOKEN.EMPTY, true)
 		SC.link(_people_row, token)
 
 	add_child(_people_row)
@@ -68,7 +67,7 @@ func get_picker_button():
 	return SC.Static.HighlightButton.build(button_texture)
 
 func set_threat(threat_card):
-	_threat_button = SC.Instance.ZoomTextureButton.new(threat_card.get_front().texture)
+	_threat_button = SC.Instance.ZoomTextureButton.new(threat_card.get_front().texture, threat_card.get_front().texture.get_size())
 	_threat_button.set_position(Vector2(50,138))
 	_threat_button.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
 	_threat_button.rect_min_size = GameData.location_threat_size_pixels

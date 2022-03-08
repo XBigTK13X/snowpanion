@@ -68,7 +68,7 @@ func get_picker_button():
 	return SC.Static.HighlightButton.build(button_texture)
 
 func set_threat(threat_card):
-	_threat_button = SC.Instance.ZoomTextureButton.new(threat_card.get_front().texture, threat_card.get_zoomed().texture)
+	_threat_button = SC.Instance.ZoomTextureButton.new(threat_card.get_front().texture)
 	_threat_button.set_position(Vector2(50,138))
 	_threat_button.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT)
 	_threat_button.rect_min_size = GameData.location_threat_size_pixels

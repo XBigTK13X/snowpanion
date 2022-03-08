@@ -3,20 +3,27 @@ extends TextureButton
 var _texture
 var _modal
 
-func _init(texture, zoomed_texture = null):
+func _init(texture):
 	_texture = texture
 	self.texture_normal = texture
 	var _connect_err = connect('pressed', self, '_show_modal')
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
-
 	var modal_texture = ImageTexture.new()
-	# TODO This won't work for atlastexures
-	# Godot 4.0 has a potential fix in get_image()
-	# but that won't be backported and 4.0 is a hot mess
-	# Thus a second zoomed texture for now to work around scaling an AtlasTexture
-	if( zoomed_texture != null):
-		modal_texture = zoomed_texture
+
+	# FIXME This is an inefficient workaround for AtlasTexture not supporting scaling
+	# This might work better in Godot 4.0, which allows for calling get_image() on a AtlasTexture region
+	if 'atlas' in texture:
+		var scaled_texture = ImageTexture.new()
+		scaled_texture.create_from_image(texture.atlas.get_data())
+		scaled_texture.set_size_override(Vector2(texture.atlas.get_width() * SC.Settings.Card_Zoom_Multiply, texture.atlas.get_height() * SC.Settings.Card_Zoom_Multiply))
+		modal_texture = AtlasTexture.new()
+		modal_texture.set_atlas(scaled_texture)
+		var size = texture.get_region().size
+		var position = texture.get_region().position
+		var scaled_region = Rect2(position.x * SC.Settings.Card_Zoom_Multiply, position.y * SC.Settings.Card_Zoom_Multiply, size.x * SC.Settings.Card_Zoom_Multiply, size.y * SC.Settings.Card_Zoom_Multiply)
+		modal_texture.set_region(scaled_region)
+		modal_texture.set_filter_clip(true)
 	else:
 		modal_texture.create_from_image(texture.get_data())
 

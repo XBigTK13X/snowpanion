@@ -20,7 +20,6 @@ var debug_companion = true
 
 func _ready():
 	container = SC.get_container()
-	print('test')
 	ingest_resources()
 	show_villain_picker()
 
@@ -87,7 +86,7 @@ func show_companion():
 
 	SC.link(villain_container, [
 		chosen_villain.get_dashboard(),
-		chosen_villain.get_plan_deck().get_back()
+		chosen_villain.get_plan_container()
 	])
 
 	var locations_rows = VBoxContainer.new()

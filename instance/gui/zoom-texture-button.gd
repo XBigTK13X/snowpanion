@@ -40,12 +40,10 @@ func _init(texture, min_size = null):
 	_modal.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _show_modal():
-	print("showing")
 	var container = SC.get_container()
 	SC.link(container, _modal)
 
 func _hide_modal():
-	print("hiding")
 	SC.unparent(_modal)
 
 func get_texture():
